@@ -1,47 +1,54 @@
 <!DOCTYPE html>
 
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="scaffolded-by" content="https://github.com/dart-lang/sdk" />
-    <title>Manim-web logo</title>
-    <style>
-      @font-face {
-        font-family: "KaTeX_Math";
-        src: url("assets/fonts/KaTeX_Math-Italic.ttf") format("truetype");
-      }
 
-      @font-face {
-        font-family: "KaTeX_Main";
-        src: url("assets/fonts/KaTeX_Main-Regular.ttf") format("truetype");
-      }
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="scaffolded-by" content="https://github.com/dart-lang/sdk" />
+  <title>Manim-web Examples</title>
+  <style>
+    h1 {
+      font-size: 1rem;
+      height: 1.5rem !important;
+    }
 
-      h1 {
-        font-size: 1rem;
-        height: 1.5rem !important;
-      }
+    :root {
+      font-size: 32pt;
+    }
 
-      :root {
-        font-size: 32pt;
-      }
+    * {
+      box-sizing: border-box;
+      padding: 0;
+      margin: 0;
+    }
 
-      * {
-        box-sizing: border-box;
-        padding: 0;
-        margin: 0;
-      }
-    </style>
-  </head>
+    .back-btn {
+      border-radius: 10px;
+      padding: 15px 20px;
+      background-color: #333333;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      color: #cccccc;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 24px;
+      text-align: center;
+    }
+  </style>
+</head>
 
-  <body>
-    <h1>Manim web logo</h1>
-    <div class="canvas-container"></div>
-    <!-- JS Libs -->
-    <script>
-      var module = {};
-    </script>
-    <script src="logo.dart.js"></script>
-  </body>
+<body>
+  <h1>Manim web Examples</h1>
+  <a href="index.html" class="back-btn">back</a>
+  <div class="canvas-container"></div>
+  <!-- JS Libs -->
+  <script>
+    var module = {};
+  </script>
+  <script src="logo.dart.js"></script>
+</body>
+
 </html>
