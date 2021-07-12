@@ -1,0 +1,31 @@
+name: Checks
+
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  run_checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
+
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Run checks
+        run: dart run tool/checks/run_all_checks
+
+      - name: Analyze project source
+        run: dart analyze
+
+      # TODO Add tests :
+      # - name: Run tests
+      #   run: dart test

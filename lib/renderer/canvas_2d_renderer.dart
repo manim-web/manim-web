@@ -1,0 +1,203 @@
+import 'dart:html';
+
+import 'package:manim_web/constants.dart';
+import 'package:manim_web/display/abstract_display.dart';
+import 'package:manim_web/display/canvas_2d_display.dart';
+import 'package:manim_web/mobject/text_mobject.dart';
+import 'package:manim_web/util/array.dart';
+import 'package:manim_web/util/color.dart';
+import 'package:manim_web/mobject/types/vectorized_mobject.dart';
+import 'package:manim_web/mobject/types/mobject.dart';
+import 'package:manim_web/util/vector.dart';
+import 'package:manim_web/renderer/abstract_renderer.dart';
+
+class Canvas2DRenderer extends AbstractRenderer {
+  Canvas2DRenderer();
+
+  late CanvasRenderingContext2D ctx;
+
+  double time = 0;
+
+  @override
+  Future<double> nextFrame() async {
+    var nextT = await window.animationFrame.then((t) => t.toDouble());
+
+    if (time == 0) {
+      time = nextT;
+    }
+
+    var dt = nextT - time;
+    time += dt;
+    return dt / 1000;
+  }
+
+  @override
+  void setup(AbstractDisplay display) {
+    super.setup(display);
+    ctx = (display as Canvas2DDisplay).canvas.context2D;
+  }
+
+  @override
+  void renderBackground(Color backgroundColor) {
+    var camera = display.camera;
+    var c = display.applyColorTransformation(backgroundColor);
+    ctx.fillStyle = c.toRGBAString();
+
+    var x = camera.frameCenter.x - camera.frameWidth / 2;
+    var y = camera.frameCenter.y - camera.frameHeight / 2;
+
+    ctx.fillRect(x, y, camera.frameWidth, camera.frameHeight);
+  }
+
+  @override
+  void renderMobject(Mobject mob) {
+    // Mobjects can't be rendered directly
+    // They need to be instances of the subclasses
+    // For example: VMobject
+  }
+
+  @override
+  void renderMobjects(List<Mobject> mobs) {
+    // Mobjects can't be rendered directly
+    // They need to be instances of the subclasses
+    // For example: VMobject
+  }
+
+  @override
+  void renderVMobject(VMobject vmob) {
+    var points = transformPointsPreDisplay(vmob, vmob.getPoints());
+
+    if (points.isEmpty) {
+      return;
+    }
+
+    var subpaths = vmob.getSubpathsFromPoints2D(points);
+
+    for (var subpath in subpaths) {
+      renderVMobjectSubpath(vmob, subpath);
+
+      applyVMobjectStroke(vmob, background: true);
+      applyVMobjectFill(vmob);
+      applyVMobjectStroke(vmob, background: false);
+
+      ctx.closePath();
+    }
+  }
+
+  void renderVMobjectSubpath(VMobject vmob, List<Vector3> subpath) {
+    ctx.beginPath();
+    var quads = vmob.genCubicBezierTuplesFromPoints(subpath);
+    var start = subpath.first;
+    ctx.moveTo(start.x, start.y);
+
+    var closedPath = vmob.considerPointsEquals2D(subpath.first, subpath.last);
+
+    for (var pts in quads) {
+      var p1 = pts.item2;
+      var p2 = pts.item3;
+      var p3 = pts.item4;
+
+      ctx.bezierCurveTo(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+    }
+
+    if (closedPath) {
+      ctx.closePath();
+    }
+  }
+
+  CanvasGradient createVMobjectGradient(VMobject vmob, List<Color> colors) {
+    var startEnd = vmob.getGradientStartAndEndPoints();
+    var points =
+        transformPointsPreDisplay(vmob, [startEnd.item1, startEnd.item2]);
+
+    var gradient = ctx.createLinearGradient(
+        points[0].x, points[0].y, points[1].x, points[1].y);
+
+    var step = 1 / (colors.length - 1);
+
+    var offsets = arange(start: 0, end: step + 1, step: step).getColumn(0);
+
+    for (var i in range(end: colors.length)) {
+      var color = display.applyColorTransformation(colors[i]);
+      var offset = offsets[i];
+
+      gradient.addColorStop(offset, color.toRGBAString());
+    }
+
+    return gradient;
+  }
+
+  void applyVMobjectFill(VMobject vmob) {
+    var fillColors = vmob.getFillColors();
+
+    if (fillColors.length > 1) {
+      ctx.fillStyle = createVMobjectGradient(vmob, fillColors);
+    } else {
+      var color = display.applyColorTransformation(vmob.getFillColor());
+      ctx.fillStyle = color.toRGBAString();
+    }
+
+    ctx.fill();
+  }
+
+  void applyVMobjectStroke(VMobject vmob, {required bool background}) {
+    var strokeWidth = vmob.getStrokeWidth(background: background);
+
+    if (strokeWidth == 0) {
+      return;
+    }
+
+    var strokeColors = vmob.getStrokeColors(background: background);
+    var screenSizeFactor = display.camera.getFrameWidth() / FRAME_WIDTH;
+    ctx.lineWidth = strokeWidth * lineWidthMultiple * screenSizeFactor;
+
+    var isTransparent = strokeColors.every((color) => color.a == 0);
+
+    if (strokeColors.isEmpty || isTransparent) {
+      return;
+    }
+
+    if (strokeColors.length > 1) {
+      ctx.strokeStyle = createVMobjectGradient(vmob, strokeColors);
+    } else {
+      var color = display.applyColorTransformation(
+          vmob.getStrokeColor(background: background));
+      ctx.strokeStyle = color.toRGBAString();
+    }
+
+    ctx.stroke();
+  }
+
+  @override
+  void renderVMobjects(List<VMobject> vmobs) {
+    for (var vmob in vmobs) {
+      renderVMobject(vmob);
+    }
+  }
+
+  @override
+  void setMatrix(double a, double b, double c, double d, double e, double f) {
+    ctx.setTransform(a, b, c, d, e, f);
+  }
+
+  @override
+  void renderText(Text text) {
+    ctx.font = 'normal ${text.fontSize / 70}px ${text.font}';
+    var color = display.applyColorTransformation(text.getColor());
+    ctx.save();
+    ctx.fillStyle = color.toRGBAString();
+    ctx.scale(1, -1);
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    var pos = text.getPos();
+    ctx.fillText(text.content, pos.x, -pos.y);
+    ctx.restore();
+  }
+
+  @override
+  void renderTexts(List<Text> mobs) {
+    for (var text in mobs) {
+      renderText(text);
+    }
+  }
+}
