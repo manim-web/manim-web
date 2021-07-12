@@ -16,7 +16,7 @@ Finally, you can run the dev server with `webdev serve`.
 
 ## Examples
 
-You can find examples of animations built with Manim-Web [here](hugo-s29.github.io/manim-web/example).
+You can find examples of animations built with Manim-Web [here](https://hugo-s29.github.io/manim-web/).
 The code is available in this repository, in the `example` folder.
 
 ## Contributing
