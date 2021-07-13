@@ -3,6 +3,8 @@ import 'dart:html';
 import 'package:manim_web/display/canvas_2d_display.dart';
 import 'package:manim_web/manim.dart';
 
+import 'assets/tex.dart';
+
 void main() {
   runScene(MatrixTransformationScene());
 }
@@ -18,6 +20,12 @@ class MatrixTransformationScene extends Scene {
   late Dot originalJ;
   late Arrow arrowI;
   late Arrow arrowJ;
+  late Group texI;
+  late Group texJ;
+  late Tex texII;
+  late Tex texJJ;
+  late Tex texIHat;
+  late Tex texJHat;
   // TODO late Tex texMatrix;
 
   double planeScale = 1.5;
@@ -72,10 +80,35 @@ class MatrixTransformationScene extends Scene {
     arrowJ = Arrow(start: originPoint, end: j.getPos(), buff: 0)
       ..setColor(color: GREEN_C);
 
-    addToFront([i, j, arrowI, arrowJ]);
+    addTex();
+
+    addToFront([i, j, arrowI, arrowJ, texI, texJ]);
     await play(AnimationGroup([
-      for (var mob in [i, j, arrowI, arrowJ]) ShowCreation(mob)
+      for (var mob in [i, j, arrowI, arrowJ]) ShowCreation(mob),
+      for (var tex in [texI, texJ]) FadeIn(tex)
     ], lagRatio: 0.1));
+  }
+
+  // TODO Use latex svg instead of this
+  void addTex() {
+    texII = Tex(imath)..setColor(color: RED_C);
+    texJJ = Tex(jmath)..setColor(color: GREEN_C);
+    texIHat = Tex('^')
+      ..setColor(color: RED_C)
+      ..scale(0.8)
+      ..nextToMobject(texII, direction: UP, buffer: SMALL_BUFFER * 1.2);
+    texJHat = Tex('^')
+      ..setColor(color: GREEN_C)
+      ..scale(0.8)
+      ..nextToMobject(texJJ, direction: UP, buffer: SMALL_BUFFER * 1.2)
+      ..shift(RIGHT * 0.05);
+
+    texI = Group([texII, texIHat])
+      ..addUpdater(
+          (m, dt) => m..nextToMobject(i, direction: UL, buffer: SMALL_BUFFER));
+    texJ = Group([texJJ, texJHat])
+      ..addUpdater(
+          (m, dt) => m..nextToMobject(j, direction: UL, buffer: SMALL_BUFFER));
   }
 
   // TODO Add tex matrix
@@ -166,3 +199,6 @@ class MatrixTransformationScene extends Scene {
 
 Vector3 listToVector(List<double> l) =>
     l.length == 2 ? Vector3(l[0], l[1], 0) : Vector3(l[0], l[1], l[2]);
+
+const imath = '';
+const jmath = '';

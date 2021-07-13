@@ -30,8 +30,6 @@ abstract class Scene {
     camera = createCamera();
     random = Random(randomSeed);
     mobjects = [];
-
-    run();
   }
 
   Future run() async {
@@ -311,5 +309,5 @@ abstract class Scene {
 class EndSceneEarlyException implements Exception {}
 
 void runScene(Scene scene) {
-  // The scene constructor already handle running the scene
+  scene.run();
 }

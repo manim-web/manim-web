@@ -2,7 +2,7 @@
 
 Manim animation engine, for the web.
 
-[Changelog](CHANGELOG.md) | [Manim](https://github.com/3b1b/manim) | [Suggestions / Improvements](IMPROVEMENTS.md) | [FAQ](FAQ.md)
+[Changelog](CHANGELOG.md) | [Manim](https://github.com/3b1b/manim) | [Suggestions / Improvements](IMPROVEMENTS.md) | [FAQ](FAQ.md) | [Discord Server](https://discord.gg/2vRqjpk247)
 
 ## Getting started
 
@@ -12,7 +12,7 @@ You will also have to activate `webdev` with `dart pub global activate webdev`.
 
 Then you will need to get all of the dependencies: `dart pub get`.
 
-Finally, you can run the dev server with `webdev serve`.
+Finally, you can run the dev server with `webdev serve {folder}` to serve a folder (by default the folder is `web`)
 
 ## Examples
 
