@@ -3548,7 +3548,9 @@ dK:function dK(a){this.a=a},
 dC:function dC(){},
 dB:function dB(a){this.a=a},
 fm:function fm(){},
-kq:function(){new Z.cS().dT()},
+kq:function(){var t=new Z.cS()
+t.dT()
+t.b9()},
 cS:function cS(){var _=this
 _.Q=_.z=_.y=null
 _.a=0
@@ -6034,8 +6036,7 @@ o.ga0().setTransform(1280/s,0,0,-720/r,640-0/s,360-0/r)
 t.gb7().d3(C.q)
 q.f=p
 new P.dh().dU(0)
-q.sbp(u.a.a(H.a([],u.r)))
-q.b9()},
+q.sbp(u.a.a(H.a([],u.r)))},
 b9:function(){var t=0,s=P.dv(u.z),r=1,q,p=[],o=this,n,m
 var $async$b9=P.dw(function(a,b){if(a===1){q=b
 t=r}while(true)switch(t){case 0:o.ga1(o).es()

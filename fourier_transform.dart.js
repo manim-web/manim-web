@@ -3625,7 +3625,9 @@ _.e=null
 _.f=0
 _.b=a
 _.d=null},er:function er(){},eq:function eq(){},
-lh:function(){new Q.cb().fD()},
+lh:function(){var s=new Q.cb()
+s.fD()
+s.bO()},
 cb:function cb(){var _=this
 _.fx=_.fr=_.dy=_.dx=_.db=_.cy=_.cx=_.ch=_.Q=_.z=_.y=null
 _.a=_.fy=0
@@ -6869,8 +6871,7 @@ n.ga8().setTransform(1280/r,0,0,-720/q,640-0/r,360-0/q)
 s.gbN().cR(C.v)
 p.f=o
 new P.dR().fE(0)
-p.sdD(t.a.a(H.a([],t.r)))
-p.bO()},
+p.sdD(t.a.a(H.a([],t.r)))},
 bO:function(){var s=0,r=P.aB(t.z),q=1,p,o=[],n=this,m,l
 var $async$bO=P.aC(function(a,b){if(a===1){p=b
 s=q}while(true)switch(s){case 0:n.ga9(n).cr()

@@ -2223,7 +2223,9 @@ _.a=a
 _.b=b
 _.c=c
 _.d=d},
-ko:function(){new K.bR().f4()},
+ko:function(){var s=new K.bR()
+s.f4()
+s.bA()},
 bR:function bR(){var _=this
 _.Q=!1
 _.cx=_.ch=0
@@ -6048,8 +6050,7 @@ n.ga_().setTransform(1280/r,0,0,-720/q,640-0/r,360-0/q)
 s.gbx().cz(C.w)
 p.f=o
 new P.dC().f5(0)
-p.sd9(t.a.a(H.a([],t.r)))
-p.bA()},
+p.sd9(t.a.a(H.a([],t.r)))},
 bA:function(){var s=0,r=P.av(t.z),q=1,p,o=[],n=this,m,l
 var $async$bA=P.aw(function(a,b){if(a===1){p=b
 s=q}while(true)switch(s){case 0:n.ga0(n).fP()
