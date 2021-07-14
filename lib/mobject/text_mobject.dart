@@ -28,5 +28,6 @@ class Text extends Mobject {
   void scale(double scaleFactor,
       {Vector3? aboutPoint, Vector3 aboutEdge = ORIGIN}) {
     fontSize *= scaleFactor;
+    super.scale(scaleFactor, aboutPoint: aboutPoint, aboutEdge: aboutEdge);
   }
 }

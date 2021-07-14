@@ -25,37 +25,48 @@ class LogoScene extends Scene {
 
   @override
   Future construct() async {
-    // when rendering the logo, uncomment this:
-    // camera.resetPixelShape(3840, 2160);
-
     createGraph();
     addTangent();
     addRectangles();
     addText();
     Group(mobjects).shift(UP);
+
+    // when rendering the logo, uncomment this:
+    // camera.resetPixelShape(3840, 2160);
+
+    // when rendering the github repository logo, uncomment these lines:
+    // camera.resetPixelShape(1280, 640);
+    // Group(mobjects).scale(0.8); // scale everything
+    // mobjects
+    //     .whereType<Text>()
+    //     .forEach((text) => text.scale(0.8)); // scale text (font-size)
+    // mobjects.whereType<VMobject>().forEach(
+    //     (vmob) => vmob.strokeWidth *= 0.8); // scale vmobjects (strokeWidth)
+
     await continueRendering();
   }
 
   void createGraph() {
     axes = Axes(
         xMin: -1,
-        xMax: 9,
+        xMax: 10,
         yMin: -1,
         yMax: 8,
         axisConfig: AxisConfig(includeTip: false),
         yAxisConfig: AxisConfig(unitSize: 0.7))
-      ..scale(0.6)
+      ..scale(0.58)
       ..centerOnYAxis()
-      ..toEdge(edge: LEFT);
+      ..toEdge(edge: LEFT, buffer: MED_SMALL_BUFFER);
 
     graph = axes.getGraph(func, xMin: 0.2, xMax: 9)
       ..setStroke(color: Color.FromHex('#68a8e1'));
 
     var x = Tex('x')
-      ..nextToPoint(axes.c2p(RIGHT * 9), direction: UR / 2)
+      ..nextToPoint(axes.c2p(RIGHT * 10),
+          direction: DOWN, buffer: MED_SMALL_BUFFER)
       ..scale(0.6);
     var y = Tex('y')
-      ..nextToPoint(axes.c2p(UP * 8), direction: UR / 2)
+      ..nextToPoint(axes.c2p(UP * 8), direction: LEFT, buffer: MED_SMALL_BUFFER)
       ..scale(0.6);
 
     add([x, y, graph, axes]);
@@ -145,12 +156,13 @@ class LogoScene extends Scene {
   }
 
   void addRectangles() {
-    var xs = linspace(start: 4, end: 8, count: 10).getColumn(0);
+    var count = 10;
+    var xs = linspace(start: 4, end: 8.5, count: count).getColumn(0);
     var dx = xs[1] - xs[0];
-    var colors = colorGradient([PURPLE_C, ORANGE], 10);
+    var colors = colorGradient([PURPLE_C, ORANGE], count);
     var origin = axes.c2p(ORIGIN);
 
-    for (var i in range(end: 10)) {
+    for (var i in range(end: count)) {
       var x = xs[i];
       var color = colors[i];
 
@@ -175,10 +187,10 @@ class LogoScene extends Scene {
   void addText() {
     var manim = Text('Manim')
       ..scale(4)
-      ..shift(RIGHT * 2.5 + DOWN / 5);
+      ..shift(RIGHT * 2.8 + DOWN / 2);
     var web = Text('web')
       ..scale(2)
-      ..shift(RIGHT * 6 + DOWN);
+      ..shift(RIGHT * 6.2 + DOWN * 1.3);
     var subtitle = Text('Mathematical Animation Engine')
       ..scale(2)
       ..toEdge(edge: DOWN, buffer: LARGE_BUFFER);
