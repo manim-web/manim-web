@@ -9,30 +9,16 @@ class SurroundingRectangle extends Rectangle {
   double buff;
   Mobject mobject;
 
-  SurroundingRectangle({
-    this.buff = SMALL_BUFFER,
-    required this.mobject,
-    Color fillColor = TRANSPARENT,
-    Color strokeColor = WHITE,
-    double strokeWidth = DEFAULT_STROKE_WIDTH,
-    Color backgroundStrokeColor = TRANSPARENT,
-    double backgroundStrokeWidth = 0.0,
-    double sheenFactor = 0.0,
-    Vector3 sheenDirection = UR,
-    bool makeSmoothAfterApplyingFunctions = false,
-  }) : super(
-            width: mobject.getWidth() + 2 * buff,
-            height: mobject.getHeight() + 2 * buff,
-            fillColor: fillColor,
-            strokeColor: strokeColor,
-            strokeWidth: strokeWidth,
-            backgroundStrokeColor: backgroundStrokeColor,
-            backgroundStrokeWidth: backgroundStrokeWidth,
-            sheenFactor: sheenFactor,
-            sheenDirection: sheenDirection,
-            makeSmoothAfterApplyingFunctions:
-                makeSmoothAfterApplyingFunctions) {
+  SurroundingRectangle(
+      {this.buff = SMALL_BUFFER, required this.mobject, Color color = WHITE})
+      : super(
+          width: mobject.getWidth() + 2 * buff,
+          height: mobject.getHeight() + 2 * buff,
+          color: color,
+        ) {
     moveToMobject(mobject);
+    setStroke(color: color);
+    setFill(color: TRANSPARENT);
   }
 
   @override
@@ -50,27 +36,9 @@ class BackgroundRectangle extends SurroundingRectangle {
   BackgroundRectangle({
     double buff = 0,
     required Mobject mobject,
-    Color fillColor = BLACK,
-    Color strokeColor = TRANSPARENT,
-    double strokeWidth = 0.0,
-    Color backgroundStrokeColor = TRANSPARENT,
-    double backgroundStrokeWidth = 0.0,
-    double sheenFactor = 0.0,
-    Vector3 sheenDirection = UR,
-    bool makeSmoothAfterApplyingFunctions = false,
-  }) : super(
-            buff: buff,
-            mobject: mobject,
-            fillColor: fillColor,
-            strokeColor: strokeColor,
-            strokeWidth: strokeWidth,
-            backgroundStrokeColor: backgroundStrokeColor,
-            backgroundStrokeWidth: backgroundStrokeWidth,
-            sheenFactor: sheenFactor,
-            sheenDirection: sheenDirection,
-            makeSmoothAfterApplyingFunctions:
-                makeSmoothAfterApplyingFunctions) {
-    originalFillOpacity = fillColor.a;
+    Color color = BLACK,
+  }) : super(buff: buff, mobject: mobject, color: color) {
+    originalFillOpacity = getFillColor().a;
   }
 
   @override
@@ -89,8 +57,6 @@ class BackgroundRectangle extends SurroundingRectangle {
       Color? backgroundStrokeColor,
       List<Color>? backgroundStrokeColors,
       double? backgroundStrokeWidth,
-      double? sheenFactor,
-      Vector3? sheenDirection,
       bool family = true}) {
     super.setStyle(
         strokeColor: TRANSPARENT,
@@ -110,16 +76,13 @@ class BackgroundRectangle extends SurroundingRectangle {
 }
 
 class Cross extends VGroup {
-  Cross(
-      {required Mobject mobject,
-      double strokeWidth = 6,
-      Color strokeColor = RED_C})
+  Cross({required Mobject mobject, Color color = RED_C})
       : super([
           Line(start: UL, end: DR),
           Line(start: UR, end: DL),
         ]) {
     replace(mobject, stretch: true);
-    setStroke(color: strokeColor, width: strokeWidth);
+    setStroke(color: color, width: 6);
   }
 
   @override
@@ -129,35 +92,19 @@ class Cross extends VGroup {
 }
 
 class Underline extends Line {
-  Underline(
-      {required Mobject mobject,
-      double buff = SMALL_BUFFER,
-      double? pathArc,
-      Vector3 start = RIGHT,
-      Vector3 end = LEFT,
-      Color? fillColor,
-      Color? strokeColor,
-      double strokeWidth = DEFAULT_STROKE_WIDTH,
-      Color? backgroundStrokeColor,
-      double backgroundStrokeWidth = 0.0,
-      double sheenFactor = 0.0,
-      Vector3 sheenDirection = UR,
-      bool makeSmoothAfterApplyingFunctions = false,
-      bool closeNewPoints = false})
-      : super(
+  Underline({
+    required Mobject mobject,
+    double buff = SMALL_BUFFER,
+    double? pathArc,
+    Vector3 start = RIGHT,
+    Vector3 end = LEFT,
+    Color color = WHITE,
+  }) : super(
           start: start,
           end: end,
           buff: buff,
           pathArc: pathArc,
-          fillColor: fillColor,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: sheenFactor,
-          sheenDirection: sheenDirection,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-          closeNewPoints: closeNewPoints,
+          color: color,
         ) {
     matchWidth(mobject);
     nextToMobject(mobject, direction: DOWN, buffer: buff);

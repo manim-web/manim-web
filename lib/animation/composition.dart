@@ -1,3 +1,5 @@
+library animation.composition;
+
 import 'dart:math';
 
 import 'package:tuple/tuple.dart';

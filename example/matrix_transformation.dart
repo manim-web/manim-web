@@ -2,8 +2,7 @@ import 'dart:html';
 
 import 'package:manim_web/display/canvas_2d_display.dart';
 import 'package:manim_web/manim.dart';
-
-import 'assets/tex.dart';
+import 'package:manim_web/mobject/svg/web_tex_mobject.dart';
 
 void main() {
   runScene(MatrixTransformationScene());
@@ -20,13 +19,9 @@ class MatrixTransformationScene extends Scene {
   late Dot originalJ;
   late Arrow arrowI;
   late Arrow arrowJ;
-  late Group texI;
-  late Group texJ;
-  late Tex texII;
-  late Tex texJJ;
-  late Tex texIHat;
-  late Tex texJHat;
-  // TODO late Tex texMatrix;
+  late MathTex texI;
+  late MathTex texJ;
+  late MathTex texMatrix;
 
   double planeScale = 1.5;
 
@@ -36,7 +31,7 @@ class MatrixTransformationScene extends Scene {
 
     await createPlane();
     await createControls();
-    // TODO await addTexMatrix();
+    await addTexMatrix();
     await transformPlane([
       [0, -1],
       [1, 0]
@@ -67,8 +62,8 @@ class MatrixTransformationScene extends Scene {
   }
 
   Future createControls() async {
-    originalI = Dot(originalPlane.c2p(RIGHT))..setFill(color: RED_C);
-    originalJ = Dot(originalPlane.c2p(UP))..setFill(color: GREEN_C);
+    originalI = Dot(originalPlane.c2p(RIGHT))..setColor(color: RED_C);
+    originalJ = Dot(originalPlane.c2p(UP))..setColor(color: GREEN_C);
 
     var originPoint = originalPlane.c2p(ORIGIN);
 
@@ -89,47 +84,37 @@ class MatrixTransformationScene extends Scene {
     ], lagRatio: 0.1));
   }
 
-  // TODO Use latex svg instead of this
   void addTex() {
-    texII = Tex(imath)..setColor(color: RED_C);
-    texJJ = Tex(jmath)..setColor(color: GREEN_C);
-    texIHat = Tex('^')
+    texI = MathTex(r'\hat{\imath}')
       ..setColor(color: RED_C)
-      ..scale(0.8)
-      ..nextToMobject(texII, direction: UP, buffer: SMALL_BUFFER * 1.2);
-    texJHat = Tex('^')
-      ..setColor(color: GREEN_C)
-      ..scale(0.8)
-      ..nextToMobject(texJJ, direction: UP, buffer: SMALL_BUFFER * 1.2)
-      ..shift(RIGHT * 0.05);
-
-    texI = Group([texII, texIHat])
       ..addUpdater(
           (m, dt) => m..nextToMobject(i, direction: UL, buffer: SMALL_BUFFER));
-    texJ = Group([texJJ, texJHat])
+    texJ = MathTex(r'\hat{\jmath}')
+      ..setColor(color: GREEN_C)
       ..addUpdater(
           (m, dt) => m..nextToMobject(j, direction: UL, buffer: SMALL_BUFFER));
   }
 
-  // TODO Add tex matrix
-  // Future addTexMatrix() async {
-  //   texMatrix = Tex('''
-  //     \\begin{bmatrix}
-  //       ${transformationMatrix[Tuple2(0, 0)]} & ${transformationMatrix[Tuple2(0, 1)]}    \\\\
-  //       ${transformationMatrix[Tuple2(1, 0)]} & ${transformationMatrix[Tuple2(1, 1)]}
-  //     \\end{bmatrix}
-  //   ''');
+  Future addTexMatrix() async {
+    // Tex substring isolation isn't possible yet
+    // TODO Change that
+    // texMatrix = MathTex('''
+    //   \\begin{bmatrix}
+    //     {{1.00}} & {{0.00}}    \\\\
+    //     {{0.00}} & {{1.00}}
+    //   \\end{bmatrix}
+    // ''');
 
-  //   texMatrix.addUpdater((_, dt) => texMatrix
-  //     ..content = '''
-  //     \\begin{bmatrix}
-  //       ${transformationMatrix[Tuple2(0, 0)]} & ${transformationMatrix[Tuple2(0, 1)]}    \\\\
-  //       ${transformationMatrix[Tuple2(1, 0)]} & ${transformationMatrix[Tuple2(1, 1)]}
-  //     \\end{bmatrix}
-  //   ''');
+    // texMatrix.addUpdater((_, dt) => texMatrix
+    //   ..content = '''
+    //   \\begin{bmatrix}
+    //     ${transformationMatrix[Tuple2(0, 0)]} & ${transformationMatrix[Tuple2(0, 1)]}    \\\\
+    //     ${transformationMatrix[Tuple2(1, 0)]} & ${transformationMatrix[Tuple2(1, 1)]}
+    //   \\end{bmatrix}
+    // ''');
 
-  //   await play(FadeIn(texMatrix));
-  // }
+    // await play(FadeIn(texMatrix));
+  }
 
   Future transformPlane(List<List<double>> values) async {
     var matrix = Array(values: values);
@@ -199,6 +184,3 @@ class MatrixTransformationScene extends Scene {
 
 Vector3 listToVector(List<double> l) =>
     l.length == 2 ? Vector3(l[0], l[1], 0) : Vector3(l[0], l[1], l[2]);
-
-const imath = '';
-const jmath = '';

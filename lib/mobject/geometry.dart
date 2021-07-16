@@ -23,8 +23,6 @@ class TipStyle extends VMobjectStyle {
           backgroundStrokeColors:
               backgroundStrokeColor != null ? [backgroundStrokeColor] : [],
           backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: 0,
-          sheenDirection: ORIGIN,
         );
 
   TipStyle.copyFrom(TipStyle style) : super.copyFrom(style);
@@ -44,8 +42,6 @@ class TipStyle extends VMobjectStyle {
     List<Color>? fillColors,
     List<Color>? strokeColors,
     List<Color>? backgroundStrokeColors,
-    double? sheenFactor,
-    Vector3? sheenDirection,
   }) {
     var _fillColor = fillColor ?? fillColors?.first ?? TRANSPARENT;
     var _strokeColor = strokeColor ?? strokeColors?.first ?? TRANSPARENT;
@@ -79,28 +75,7 @@ class TipableVMobject extends VMobject {
   ArrowTip? startTip;
   ArrowTip? endTip;
 
-  TipableVMobject(
-      {Color color = WHITE,
-      Color? fillColor,
-      Color? strokeColor,
-      double strokeWidth = DEFAULT_STROKE_WIDTH,
-      Color? backgroundStrokeColor,
-      double backgroundStrokeWidth = 0.0,
-      double sheenFactor = 0.0,
-      Vector3 sheenDirection = UR,
-      bool makeSmoothAfterApplyingFunctions = false,
-      bool closeNewPoints = false})
-      : super(
-          fillColor: fillColor ?? TRANSPARENT,
-          strokeColor: strokeColor ?? WHITE,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: sheenFactor,
-          sheenDirection: sheenDirection,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-          closeNewPoints: closeNewPoints,
-        ) {
+  TipableVMobject({Color color = WHITE}) : super() {
     setColor(color: color);
   }
 
@@ -314,26 +289,8 @@ class Arc extends TipableVMobject {
       this.radius = 1,
       this.arcCenter = ORIGIN,
       this.numComponents = 9,
-      Color? fillColor,
-      Color? strokeColor,
-      double strokeWidth = DEFAULT_STROKE_WIDTH,
-      Color? backgroundStrokeColor,
-      double backgroundStrokeWidth = 0.0,
-      double sheenFactor = 0.0,
-      Vector3 sheenDirection = UR,
-      bool makeSmoothAfterApplyingFunctions = false,
-      bool closeNewPoints = false})
-      : super(
-          fillColor: fillColor,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: sheenFactor,
-          sheenDirection: sheenDirection,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-          closeNewPoints: closeNewPoints,
-        );
+      Color color = WHITE})
+      : super(color: color);
 
   Arc.copyFrom(Arc mob)
       : startAngle = mob.startAngle,
@@ -349,7 +306,7 @@ class Arc extends TipableVMobject {
   @override
   void generatePoints() {
     setPrepositionedPoints();
-    scale(radius, aboutPoint: ORIGIN);
+    scaleUniformly(radius, aboutPoint: ORIGIN);
     shift(arcCenter);
   }
 
@@ -416,17 +373,9 @@ class ArcBetweenPoints extends Arc {
     double radius = 1,
     Vector3 arcCenter = ORIGIN,
     int numComponents = 9,
-    Color? strokeColor,
-    double strokeWidth = DEFAULT_STROKE_WIDTH,
-    Color? backgroundStrokeColor,
-    double backgroundStrokeWidth = 0.0,
-    bool makeSmoothAfterApplyingFunctions = false,
+    Color color = WHITE,
   }) : super(
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
+          color: color,
           startAngle: startAngle,
           angle: angle,
           radius: radius,
@@ -457,14 +406,10 @@ class CurvedArrow extends ArcBetweenPoints {
     bool anchorsSpanFullRange = true,
     int numComponents = 9,
     Color color = WHITE,
-    double strokeWidth = DEFAULT_STROKE_WIDTH,
-    bool makeSmoothAfterApplyingFunctions = false,
   }) : super(
           start: start,
           end: end,
-          strokeColor: color,
-          strokeWidth: strokeWidth,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
+          color: color,
           startAngle: startAngle,
           angle: angle,
           radius: radius,
@@ -490,14 +435,10 @@ class CurvedDoubleArrow extends ArcBetweenPoints {
     Vector3 arcCenter = ORIGIN,
     int numComponents = 9,
     Color color = WHITE,
-    double strokeWidth = DEFAULT_STROKE_WIDTH,
-    bool makeSmoothAfterApplyingFunctions = false,
   }) : super(
           start: start,
           end: end,
-          strokeColor: color,
-          strokeWidth: strokeWidth,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
+          color: color,
           startAngle: startAngle,
           angle: angle,
           radius: radius,
@@ -515,31 +456,19 @@ class CurvedDoubleArrow extends ArcBetweenPoints {
 }
 
 class Circle extends Arc {
+  @override
+  bool closeNewPoints = true;
+
   Circle({
     double radius = 1,
     Vector3 arcCenter = ORIGIN,
-    Color? fillColor,
-    Color? strokeColor,
-    double strokeWidth = DEFAULT_STROKE_WIDTH,
-    Color? backgroundStrokeColor,
-    double backgroundStrokeWidth = 0.0,
-    double sheenFactor = 0.0,
-    Vector3 sheenDirection = UR,
-    bool makeSmoothAfterApplyingFunctions = false,
+    Color color = WHITE,
   }) : super(
           startAngle: 0,
           angle: TAU,
           radius: radius,
-          fillColor: fillColor,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: sheenFactor,
-          sheenDirection: sheenDirection,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-          closeNewPoints: true,
           arcCenter: arcCenter,
+          color: color,
         );
 
   @override
@@ -558,7 +487,7 @@ class Circle extends Arc {
     var w = getWidth();
     var h = getHeight();
     setWidth(sqrt(w * w + h * h));
-    scale(bufferFactor);
+    scaleUniformly(bufferFactor);
   }
 
   Vector3 pointAtAngle(double angle) {
@@ -576,20 +505,8 @@ class Dot extends Circle {
   Dot(
     Vector3 pt, {
     double radius = DEFAULT_DOT_RADIUS,
-    Color fillColor = WHITE,
-    Color strokeColor = WHITE,
-    double strokeWidth = 0,
-    Color backgroundStrokeColor = BLACK,
-    double backgroundStrokeWidth = 0.0,
-  }) : super(
-          radius: radius,
-          fillColor: fillColor,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          arcCenter: pt,
-        );
+    Color color = WHITE,
+  }) : super(radius: radius, arcCenter: pt, color: color);
 
   Dot.copyFrom(Dot mob) : super.copyFrom(mob);
 
@@ -601,20 +518,8 @@ class SmallDot extends Dot {
   SmallDot(
     Vector3 pt, {
     double radius = DEFAULT_SMALL_DOT_RADIUS,
-    Color fillColor = WHITE,
-    Color strokeColor = WHITE,
-    double strokeWidth = 0,
-    Color backgroundStrokeColor = BLACK,
-    double backgroundStrokeWidth = 0.0,
-  }) : super(
-          pt,
-          radius: radius,
-          fillColor: fillColor,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-        );
+    Color color = WHITE,
+  }) : super(pt, radius: radius, color: color);
 
   SmallDot.copyFrom(SmallDot mob) : super.copyFrom(mob);
 
@@ -626,24 +531,8 @@ class Ellipse extends Circle {
   Ellipse({
     double width = 2,
     double height = 1,
-    Color? fillColor,
-    Color? strokeColor,
-    double strokeWidth = DEFAULT_STROKE_WIDTH,
-    Color? backgroundStrokeColor,
-    double backgroundStrokeWidth = 0.0,
-    double sheenFactor = 0.0,
-    Vector3 sheenDirection = UR,
-    bool makeSmoothAfterApplyingFunctions = false,
-  }) : super(
-          fillColor: fillColor,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: sheenFactor,
-          sheenDirection: sheenDirection,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-        ) {
+    Color color = WHITE,
+  }) : super(color: color) {
     setWidth(width, stretch: true);
     setHeight(height, stretch: true);
   }
@@ -658,49 +547,35 @@ class AnnularSector extends Arc {
   double innerRadius;
   double outerRadius;
 
-  AnnularSector({
-    double startAngle = 0,
-    double angle = TAU / 4,
-    this.outerRadius = 2,
-    this.innerRadius = 1,
-    Vector3 arcCenter = ORIGIN,
-    Color? fillColor,
-    Color? strokeColor,
-    double strokeWidth = DEFAULT_STROKE_WIDTH,
-    Color? backgroundStrokeColor,
-    double backgroundStrokeWidth = 0.0,
-    double sheenFactor = 0.0,
-    Vector3 sheenDirection = UR,
-    bool makeSmoothAfterApplyingFunctions = false,
-    bool closeNewPoints = false,
-  }) : super(
+  AnnularSector(
+      {double startAngle = 0,
+      double angle = TAU / 4,
+      this.outerRadius = 2,
+      this.innerRadius = 1,
+      Vector3 arcCenter = ORIGIN,
+      Color color = WHITE})
+      : super(
           startAngle: startAngle,
           angle: angle,
           radius: outerRadius,
           arcCenter: arcCenter,
-          fillColor: fillColor,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: sheenFactor,
-          sheenDirection: sheenDirection,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-          closeNewPoints: closeNewPoints,
+          color: color,
         );
 
   @override
   void generatePoints() {
     var innerArc = Arc(
-        startAngle: startAngle,
-        angle: angle,
-        radius: innerRadius,
-        arcCenter: arcCenter);
+      startAngle: startAngle,
+      angle: angle,
+      radius: innerRadius,
+      arcCenter: arcCenter,
+    );
     var outerArc = Arc(
-        startAngle: startAngle,
-        angle: angle,
-        radius: outerRadius,
-        arcCenter: arcCenter);
+      startAngle: startAngle,
+      angle: angle,
+      radius: outerRadius,
+      arcCenter: arcCenter,
+    );
 
     outerArc.reversePoints();
     appendPoints(innerArc.points);
@@ -725,28 +600,12 @@ class Sector extends AnnularSector {
     double outerRadius = 1,
     double innerRadius = 0,
     Vector3 arcCenter = ORIGIN,
-    Color? fillColor,
-    Color? strokeColor,
-    double strokeWidth = DEFAULT_STROKE_WIDTH,
-    Color? backgroundStrokeColor,
-    double backgroundStrokeWidth = 0.0,
-    double sheenFactor = 0.0,
-    Vector3 sheenDirection = UR,
-    bool makeSmoothAfterApplyingFunctions = false,
-    bool closeNewPoints = false,
+    Color color = WHITE,
   }) : super(
           startAngle: startAngle,
           angle: angle,
           arcCenter: arcCenter,
-          fillColor: fillColor,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: sheenFactor,
-          sheenDirection: sheenDirection,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-          closeNewPoints: closeNewPoints,
+          color: color,
           outerRadius: outerRadius,
           innerRadius: innerRadius,
         );
@@ -764,24 +623,8 @@ class Annulus extends Circle {
   Annulus({
     this.innerRadius = 1,
     this.outerRadius = 2,
-    Color? fillColor,
-    Color? strokeColor,
-    double strokeWidth = 0.0,
-    Color? backgroundStrokeColor,
-    double backgroundStrokeWidth = 0.0,
-    double sheenFactor = 0.0,
-    Vector3 sheenDirection = UR,
-    bool makeSmoothAfterApplyingFunctions = false,
-  }) : super(
-          fillColor: fillColor,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: sheenFactor,
-          sheenDirection: sheenDirection,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-        );
+    Color color = WHITE,
+  }) : super(color: color);
 
   @override
   void generatePoints() {
@@ -815,26 +658,8 @@ class Line extends TipableVMobject {
       this.pathArc,
       this.start = RIGHT,
       this.end = LEFT,
-      Color? fillColor,
-      Color? strokeColor,
-      double strokeWidth = DEFAULT_STROKE_WIDTH,
-      Color? backgroundStrokeColor,
-      double backgroundStrokeWidth = 0.0,
-      double sheenFactor = 0.0,
-      Vector3 sheenDirection = UR,
-      bool makeSmoothAfterApplyingFunctions = false,
-      bool closeNewPoints = false})
-      : super(
-          fillColor: fillColor,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: sheenFactor,
-          sheenDirection: sheenDirection,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-          closeNewPoints: closeNewPoints,
-        );
+      Color color = WHITE})
+      : super(color: color);
 
   Line.copyFrom(Line mob)
       : buff = mob.buff,
@@ -907,7 +732,7 @@ class Line extends TipableVMobject {
 
   void setAngle(double angle) =>
       rotate(angle - getAngle(), aboutPoint: getStart());
-  void setLength(double length) => scale(length / getLength());
+  void setLength(double length) => scaleUniformly(length / getLength());
 }
 
 class DashedLine extends Line {
@@ -923,29 +748,13 @@ class DashedLine extends Line {
       double? pathArc,
       Vector3 start = RIGHT,
       Vector3 end = LEFT,
-      Color? fillColor,
-      Color? strokeColor,
-      double strokeWidth = DEFAULT_STROKE_WIDTH,
-      Color? backgroundStrokeColor,
-      double backgroundStrokeWidth = 0.0,
-      double sheenFactor = 0.0,
-      Vector3 sheenDirection = UR,
-      bool makeSmoothAfterApplyingFunctions = false,
-      bool closeNewPoints = false})
+      Color color = WHITE})
       : super(
           start: start,
           end: end,
           buff: buff,
           pathArc: pathArc,
-          fillColor: fillColor,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: sheenFactor,
-          sheenDirection: sheenDirection,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-          closeNewPoints: closeNewPoints,
+          color: color,
         ) {
     var numDashes = getDashCount();
     var dashes = DashedVMobject(this,
@@ -1007,36 +816,21 @@ class DashedLine extends Line {
 }
 
 class TangentLine extends Line {
-  TangentLine(VMobject vmob, double alpha,
-      {double dAlpha = 1e-6,
-      double length = 1,
-      double buff = 0,
-      double? pathArc,
-      Color? fillColor,
-      Color? strokeColor,
-      double strokeWidth = DEFAULT_STROKE_WIDTH,
-      Color? backgroundStrokeColor,
-      double backgroundStrokeWidth = 0.0,
-      double sheenFactor = 0.0,
-      Vector3 sheenDirection = UR,
-      bool makeSmoothAfterApplyingFunctions = false,
-      bool closeNewPoints = false})
-      : super(
-          start: vmob.pointFromProportion(clip(alpha - dAlpha, 0, 1)),
-          end: vmob.pointFromProportion(clip(alpha + dAlpha, 0, 1)),
-          buff: buff,
-          pathArc: pathArc,
-          fillColor: fillColor,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: sheenFactor,
-          sheenDirection: sheenDirection,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-          closeNewPoints: closeNewPoints,
-        ) {
-    scale(length / getLength());
+  TangentLine(
+    VMobject vmob,
+    double alpha, {
+    double dAlpha = 1e-6,
+    double length = 1,
+    double buff = 0,
+    double? pathArc,
+    Color color = WHITE,
+  }) : super(
+            start: vmob.pointFromProportion(clip(alpha - dAlpha, 0, 1)),
+            end: vmob.pointFromProportion(clip(alpha + dAlpha, 0, 1)),
+            buff: buff,
+            pathArc: pathArc,
+            color: color) {
+    scaleUniformly(length / getLength());
   }
 
   TangentLine.copyFrom(TangentLine mob) : super.copyFrom(mob);
@@ -1049,31 +843,8 @@ class Elbow extends VMobject {
   Elbow({
     double width = 0.2,
     double angle = 0,
-    Color? fillColor,
-    Color? strokeColor,
-    double strokeWidth = DEFAULT_STROKE_WIDTH,
-    Color? backgroundStrokeColor,
-    double backgroundStrokeWidth = 0.0,
-    double sheenFactor = 0.0,
-    Vector3 sheenDirection = UR,
-    bool closeNewPoints = false,
-    double preFunctionHandleToAnchorScaleFactor = 0.01,
-    bool makeSmoothAfterApplyingFunctions = false,
-    double toleranceForPointEquality = 1e-6,
-  }) : super(
-          fillColor: fillColor,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: sheenFactor,
-          sheenDirection: sheenDirection,
-          closeNewPoints: closeNewPoints,
-          preFunctionHandleToAnchorScaleFactor:
-              preFunctionHandleToAnchorScaleFactor,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-          toleranceForPointEquality: toleranceForPointEquality,
-        ) {
+    Color color = WHITE,
+  }) : super(color: color) {
     setPointsAsCorners([UP, UP + RIGHT, RIGHT]);
     setWidth(width, aboutPoint: ORIGIN);
     rotateAboutOrigin(angle);
@@ -1090,35 +861,22 @@ class Arrow extends Line {
   double maxStrokeWidthToLengthRatio = 5;
   bool preserveTipSizeWhenScaling = true;
 
+  @override
+  double strokeWidth = 6;
+
   late double initialStrokeWidth;
-  Arrow(
-      {required Vector3 start,
-      required Vector3 end,
-      double buff = MED_SMALL_BUFFER,
-      double? pathArc,
-      Color? fillColor,
-      Color? strokeColor,
-      double strokeWidth = 6,
-      Color? backgroundStrokeColor,
-      double backgroundStrokeWidth = 0.0,
-      double sheenFactor = 0.0,
-      Vector3 sheenDirection = UR,
-      bool makeSmoothAfterApplyingFunctions = false,
-      bool closeNewPoints = false})
-      : super(
+  Arrow({
+    required Vector3 start,
+    required Vector3 end,
+    double buff = MED_SMALL_BUFFER,
+    double? pathArc,
+    Color color = WHITE,
+  }) : super(
           start: start,
           end: end,
           buff: buff,
           pathArc: pathArc,
-          fillColor: fillColor,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: sheenFactor,
-          sheenDirection: sheenDirection,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-          closeNewPoints: closeNewPoints,
+          color: color,
         ) {
     initialStrokeWidth = strokeWidth;
     addTip(side: TIP_AT_END);
@@ -1126,12 +884,13 @@ class Arrow extends Line {
   }
 
   @override
-  void scale(double factor, {Vector3 aboutEdge = ORIGIN, Vector3? aboutPoint}) {
+  void scaleUniformly(double factor,
+      {Vector3 aboutEdge = ORIGIN, Vector3? aboutPoint}) {
     if (getLength() == 0) {
       return;
     }
 
-    super.scale(factor, aboutEdge: aboutEdge, aboutPoint: aboutPoint);
+    super.scaleUniformly(factor, aboutEdge: aboutEdge, aboutPoint: aboutPoint);
     setStrokeWidthFromLength();
 
     refreshTips();
@@ -1167,34 +926,18 @@ class Arrow extends Line {
 }
 
 class Vector extends Arrow {
-  Vector(
-      {Vector3 start = ORIGIN,
-      Vector3 end = RIGHT,
-      double buff = 0,
-      double? pathArc,
-      Color? fillColor,
-      Color? strokeColor,
-      double strokeWidth = 6,
-      Color? backgroundStrokeColor,
-      double backgroundStrokeWidth = 0.0,
-      double sheenFactor = 0.0,
-      Vector3 sheenDirection = UR,
-      bool makeSmoothAfterApplyingFunctions = false,
-      bool closeNewPoints = false})
-      : super(
+  Vector({
+    Vector3 start = ORIGIN,
+    Vector3 end = RIGHT,
+    double buff = 0,
+    double? pathArc,
+    Color color = WHITE,
+  }) : super(
           start: start,
           end: end,
           buff: buff,
           pathArc: pathArc,
-          fillColor: fillColor,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: sheenFactor,
-          sheenDirection: sheenDirection,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-          closeNewPoints: closeNewPoints,
+          color: color,
         );
 
   Vector.copyFrom(Vector mob) : super.copyFrom(mob);
@@ -1209,29 +952,13 @@ class DoubleArrow extends Arrow {
       Vector3 end = RIGHT,
       double buff = MED_SMALL_BUFFER,
       double? pathArc,
-      Color? fillColor,
-      Color? strokeColor,
-      double strokeWidth = 6,
-      Color? backgroundStrokeColor,
-      double backgroundStrokeWidth = 0.0,
-      double sheenFactor = 0.0,
-      Vector3 sheenDirection = UR,
-      bool makeSmoothAfterApplyingFunctions = false,
-      bool closeNewPoints = false})
+      Color color = WHITE})
       : super(
           start: start,
           end: end,
           buff: buff,
           pathArc: pathArc,
-          fillColor: fillColor,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: sheenFactor,
-          sheenDirection: sheenDirection,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-          closeNewPoints: closeNewPoints,
+          color: color,
         ) {
     addTip(side: TIP_AT_START);
   }
@@ -1243,33 +970,8 @@ class DoubleArrow extends Arrow {
 }
 
 class CubicBezier extends VMobject {
-  CubicBezier(
-    List<Vector3> points, {
-    Color? fillColor,
-    Color? strokeColor,
-    double strokeWidth = DEFAULT_STROKE_WIDTH,
-    Color? backgroundStrokeColor,
-    double backgroundStrokeWidth = 0.0,
-    double sheenFactor = 0.0,
-    Vector3 sheenDirection = UR,
-    bool closeNewPoints = false,
-    double preFunctionHandleToAnchorScaleFactor = 0.01,
-    bool makeSmoothAfterApplyingFunctions = false,
-    double toleranceForPointEquality = 1e-6,
-  }) : super(
-          fillColor: fillColor,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: sheenFactor,
-          sheenDirection: sheenDirection,
-          closeNewPoints: closeNewPoints,
-          preFunctionHandleToAnchorScaleFactor:
-              preFunctionHandleToAnchorScaleFactor,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-          toleranceForPointEquality: toleranceForPointEquality,
-        ) {
+  CubicBezier(List<Vector3> points, {Color color = WHITE})
+      : super(color: color) {
     setPoints(points);
   }
 
@@ -1280,28 +982,7 @@ class CubicBezier extends VMobject {
 }
 
 class Polygon extends VMobject {
-  Polygon(
-    List<Vector3> vertices, {
-    Color? fillColor,
-    Color? strokeColor,
-    double strokeWidth = DEFAULT_STROKE_WIDTH,
-    Color? backgroundStrokeColor,
-    double backgroundStrokeWidth = 0.0,
-    double sheenFactor = 0.0,
-    Vector3 sheenDirection = UR,
-    bool makeSmoothAfterApplyingFunctions = false,
-    bool closeNewPoints = false,
-  }) : super(
-          fillColor: fillColor,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: sheenFactor,
-          sheenDirection: sheenDirection,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-          closeNewPoints: closeNewPoints,
-        ) {
+  Polygon(List<Vector3> vertices, {Color color = WHITE}) : super(color: color) {
     setPointsAsCorners([...vertices, vertices.first]);
   }
 
@@ -1352,30 +1033,15 @@ class Polygon extends VMobject {
 }
 
 class RegularPolygon extends Polygon {
-  RegularPolygon({
-    int numSides = 6,
-    double? startAngle,
-    Color? fillColor,
-    Color? strokeColor,
-    double strokeWidth = DEFAULT_STROKE_WIDTH,
-    Color? backgroundStrokeColor,
-    double backgroundStrokeWidth = 0.0,
-    double sheenFactor = 0.0,
-    Vector3 sheenDirection = UR,
-    bool makeSmoothAfterApplyingFunctions = false,
-  }) : super(
+  RegularPolygon({int numSides = 6, double? startAngle, Color color = WHITE})
+      : super(
           compassDirections(
-              numSides: numSides,
-              startVec: RIGHT.rotate(
-                  startAngle ?? (numSides % 2 == 0 ? 0 : 90 * DEGREES))),
-          fillColor: fillColor,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: sheenFactor,
-          sheenDirection: sheenDirection,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
+            numSides: numSides,
+            startVec: RIGHT.rotate(
+              startAngle ?? (numSides % 2 == 0 ? 0 : 90 * DEGREES),
+            ),
+          ),
+          color: color,
         );
 
   RegularPolygon.copyFrom(RegularPolygon mob) : super.copyFrom(mob);
@@ -1385,28 +1051,8 @@ class RegularPolygon extends Polygon {
 }
 
 class Triangle extends RegularPolygon {
-  Triangle({
-    double? startAngle,
-    Color? fillColor,
-    Color? strokeColor,
-    double strokeWidth = DEFAULT_STROKE_WIDTH,
-    Color? backgroundStrokeColor,
-    double backgroundStrokeWidth = 0.0,
-    double sheenFactor = 0.0,
-    Vector3 sheenDirection = UR,
-    bool makeSmoothAfterApplyingFunctions = false,
-  }) : super(
-          numSides: 3,
-          startAngle: startAngle,
-          fillColor: fillColor,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: sheenFactor,
-          sheenDirection: sheenDirection,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-        );
+  Triangle({double? startAngle, Color color = WHITE})
+      : super(numSides: 3, startAngle: startAngle, color: color);
 
   Triangle.copyFrom(Triangle mob) : super.copyFrom(mob);
 
@@ -1415,22 +1061,14 @@ class Triangle extends RegularPolygon {
 }
 
 class ArrowTip extends Triangle {
-  ArrowTip(
-      {Color? fillColor,
-      Color? strokeColor,
-      double strokeWidth = 0,
-      Color? backgroundStrokeColor,
-      double backgroundStrokeWidth = 0.0,
-      double length = DEFAULT_ARROW_TIP_LENGTH,
-      double startAngle = PI})
-      : super(
-          fillColor: fillColor,
-          startAngle: startAngle,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-        ) {
+  @override
+  double strokeWidth = 0;
+
+  ArrowTip({
+    double length = DEFAULT_ARROW_TIP_LENGTH,
+    double startAngle = PI,
+    Color color = WHITE,
+  }) : super(startAngle: startAngle, color: color) {
     rotate(startAngle);
     setWidth(length, stretch: true);
     setHeight(length, stretch: true);
@@ -1449,29 +1087,8 @@ class ArrowTip extends Triangle {
 }
 
 class Rectangle extends Polygon {
-  Rectangle({
-    double width = 4.0,
-    double height = 2.0,
-    Color? fillColor,
-    Color? strokeColor,
-    double strokeWidth = DEFAULT_STROKE_WIDTH,
-    Color? backgroundStrokeColor,
-    double backgroundStrokeWidth = 0.0,
-    double sheenFactor = 0.0,
-    Vector3 sheenDirection = UR,
-    bool makeSmoothAfterApplyingFunctions = false,
-  }) : super(
-          [UL, UR, DR, DL],
-          fillColor: fillColor,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: sheenFactor,
-          sheenDirection: sheenDirection,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-          closeNewPoints: false,
-        ) {
+  Rectangle({double width = 4.0, double height = 2.0, Color color = WHITE})
+      : super([UL, UR, DR, DL], color: color) {
     setWidth(width, stretch: true);
     setHeight(height, stretch: true);
   }
@@ -1483,28 +1100,8 @@ class Rectangle extends Polygon {
 }
 
 class Square extends Rectangle {
-  Square({
-    double sideLength = 2.0,
-    Color? fillColor,
-    Color? strokeColor,
-    double strokeWidth = DEFAULT_STROKE_WIDTH,
-    Color? backgroundStrokeColor,
-    double backgroundStrokeWidth = 0.0,
-    double sheenFactor = 0.0,
-    Vector3 sheenDirection = UR,
-    bool makeSmoothAfterApplyingFunctions = false,
-  }) : super(
-          fillColor: fillColor,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: sheenFactor,
-          sheenDirection: sheenDirection,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-          width: sideLength,
-          height: sideLength,
-        );
+  Square({double sideLength = 2.0, Color color = WHITE})
+      : super(color: color, width: sideLength, height: sideLength);
 
   Square.copyFrom(Square mob) : super.copyFrom(mob);
 
@@ -1517,26 +1114,8 @@ class RoundedRectangle extends Rectangle {
     double width = 4.0,
     double height = 2.0,
     double cornerRadius = 0.5,
-    Color? fillColor,
-    Color? strokeColor,
-    double strokeWidth = DEFAULT_STROKE_WIDTH,
-    Color? backgroundStrokeColor,
-    double backgroundStrokeWidth = 0.0,
-    double sheenFactor = 0.0,
-    Vector3 sheenDirection = UR,
-    bool makeSmoothAfterApplyingFunctions = false,
-  }) : super(
-          fillColor: fillColor,
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: sheenFactor,
-          sheenDirection: sheenDirection,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-          width: width,
-          height: height,
-        ) {
+    Color color = WHITE,
+  }) : super(color: color, width: width, height: height) {
     roundCorners(radius: cornerRadius);
   }
 

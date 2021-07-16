@@ -7,6 +7,7 @@ environment:
 
 dependencies:
   collection: ^1.15.0
+  html: ^0.15.0
   js: ^0.6.3
   tuple: ^2.0.0
 

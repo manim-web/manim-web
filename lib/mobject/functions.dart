@@ -22,25 +22,8 @@ class ParametricFunction extends VMobject {
     this.tMax = 1,
     this.dt = 1e-8,
     this.discontinuities = const [],
-    Color? strokeColor,
-    double strokeWidth = DEFAULT_STROKE_WIDTH,
-    Color? backgroundStrokeColor,
-    double backgroundStrokeWidth = 0.0,
-    bool closeNewPoints = false,
-    double preFunctionHandleToAnchorScaleFactor = 0.01,
-    bool makeSmoothAfterApplyingFunctions = false,
-    double toleranceForPointEquality = 1e-6,
-  }) : super(
-          strokeColor: strokeColor,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          closeNewPoints: closeNewPoints,
-          preFunctionHandleToAnchorScaleFactor:
-              preFunctionHandleToAnchorScaleFactor,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-          toleranceForPointEquality: toleranceForPointEquality,
-        ) {
+    Color color = WHITE,
+  }) : super(color: color) {
     setFill(color: TRANSPARENT);
   }
 
@@ -119,29 +102,14 @@ class FunctionGraph extends ParametricFunction {
     double xMax = FRAME_X_RADIUS,
     double dt = 1e-8,
     List<double> discontinuities = const [],
-    Color? strokeColor,
-    double strokeWidth = DEFAULT_STROKE_WIDTH,
-    Color? backgroundStrokeColor,
-    double backgroundStrokeWidth = 0.0,
-    bool closeNewPoints = false,
-    double preFunctionHandleToAnchorScaleFactor = 0.01,
-    bool makeSmoothAfterApplyingFunctions = false,
-    double toleranceForPointEquality = 1e-6,
+    Color color = WHITE,
   }) : super(
             stepSize: stepSize,
             tMin: xMin,
             tMax: xMax,
             dt: dt,
             discontinuities: discontinuities,
-            strokeColor: strokeColor,
-            strokeWidth: strokeWidth,
-            backgroundStrokeColor: backgroundStrokeColor,
-            backgroundStrokeWidth: backgroundStrokeWidth,
-            closeNewPoints: closeNewPoints,
-            preFunctionHandleToAnchorScaleFactor:
-                preFunctionHandleToAnchorScaleFactor,
-            makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-            toleranceForPointEquality: toleranceForPointEquality,
+            color: color,
             parametricFunction: (double t) => Vector3(t, function(t), 0));
 
   double Function(double x) getFunction() => function;

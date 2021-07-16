@@ -2,8 +2,7 @@ import 'dart:html';
 
 import 'package:manim_web/display/canvas_2d_display.dart';
 import 'package:manim_web/manim.dart';
-
-import 'assets/tex.dart';
+import 'package:manim_web/mobject/svg/web_tex_mobject.dart';
 
 void main() {
   runScene(LogoScene());
@@ -36,10 +35,7 @@ class LogoScene extends Scene {
 
     // when rendering the github repository logo, uncomment these lines:
     // camera.resetPixelShape(1280, 640);
-    // Group(mobjects).scale(0.8); // scale everything
-    // mobjects
-    //     .whereType<Text>()
-    //     .forEach((text) => text.scale(0.8)); // scale text (font-size)
+    // Group(mobjects).scaleUniformly(0.8); // scale everything
     // mobjects.whereType<VMobject>().forEach(
     //     (vmob) => vmob.strokeWidth *= 0.8); // scale vmobjects (strokeWidth)
 
@@ -54,20 +50,20 @@ class LogoScene extends Scene {
         yMax: 8,
         axisConfig: AxisConfig(includeTip: false),
         yAxisConfig: AxisConfig(unitSize: 0.7))
-      ..scale(0.58)
+      ..scaleUniformly(0.58)
       ..centerOnYAxis()
       ..toEdge(edge: LEFT, buffer: MED_SMALL_BUFFER);
 
     graph = axes.getGraph(func, xMin: 0.2, xMax: 9)
       ..setStroke(color: Color.FromHex('#68a8e1'));
 
-    var x = Tex('x')
+    var x = MathTex('x')
       ..nextToPoint(axes.c2p(RIGHT * 10),
           direction: DOWN, buffer: MED_SMALL_BUFFER)
-      ..scale(0.6);
-    var y = Tex('y')
+      ..scaleUniformly(0.9);
+    var y = MathTex('y')
       ..nextToPoint(axes.c2p(UP * 8), direction: LEFT, buffer: MED_SMALL_BUFFER)
-      ..scale(0.6);
+      ..scaleUniformly(0.9);
 
     add([x, y, graph, axes]);
   }
@@ -80,26 +76,28 @@ class LogoScene extends Scene {
     var ptB = axes.c2p(Vector3(b, _fB, 0));
 
     tangentLine = Line(start: ptA, end: ptB)
-      ..scale(4)
+      ..scaleUniformly(4)
       ..setColor(color: RED_C);
 
-    var dotA = Dot(ptA)..scale(0.6);
-    var dotB = Dot(ptB)..scale(0.6);
+    var dotA = Dot(ptA)..scaleUniformly(0.6);
+    var dotB = Dot(ptB)..scaleUniformly(0.6);
     var origin = axes.c2p(ORIGIN);
 
-    var fA = Tex('f(a)')
-      ..scale(0.6)
-      ..nextToPoint(Vector3(origin.x, ptA.y, 0), direction: LEFT);
-    var fB = Tex('f(b)')
-      ..scale(0.6)
-      ..nextToPoint(Vector3(origin.x, ptB.y, 0), direction: LEFT);
+    var fA = MathTex('f(a)')
+      ..scaleUniformly(0.6)
+      ..nextToPoint(Vector3(origin.x, ptA.y, 0),
+          direction: LEFT, buffer: MED_SMALL_BUFFER);
+    var fB = MathTex('f(b)')
+      ..scaleUniformly(0.6)
+      ..nextToPoint(Vector3(origin.x, ptB.y, 0),
+          direction: LEFT, buffer: MED_SMALL_BUFFER);
     var fATriangle = Triangle()
-      ..scale(0.05)
+      ..scaleUniformly(0.05)
       ..rotate(90 * DEGREES)
       ..nextToPoint(Vector3(origin.x, ptA.y, 0), direction: LEFT)
       ..shift(RIGHT / 2.5);
     var fBTriangle = Triangle()
-      ..scale(0.05)
+      ..scaleUniformly(0.05)
       ..rotate(90 * DEGREES)
       ..nextToPoint(Vector3(origin.x, ptB.y, 0), direction: LEFT)
       ..shift(RIGHT / 2.5);
@@ -108,20 +106,20 @@ class LogoScene extends Scene {
     var dashedLinefB = DashedLine(start: fBTriangle.getCenter(), end: ptB)
       ..setStroke(width: 2);
 
-    var texA = Tex('a')
-      ..scale(0.6)
+    var texA = MathTex('a')
+      ..scaleUniformly(0.6)
       ..nextToPoint(Vector3(ptA.x, origin.y, 0),
-          direction: DOWN, buffer: MED_SMALL_BUFFER * 1.5);
-    var texB = Tex('b')
-      ..scale(0.6)
+          direction: DOWN, buffer: MED_SMALL_BUFFER);
+    var texB = MathTex('b')
+      ..scaleUniformly(0.6)
       ..nextToPoint(Vector3(ptB.x, origin.y, 0),
-          direction: DOWN, buffer: MED_SMALL_BUFFER * 1.5);
+          direction: DOWN, buffer: MED_SMALL_BUFFER);
     var aTriangle = Triangle()
-      ..scale(0.05)
+      ..scaleUniformly(0.05)
       ..nextToPoint(Vector3(ptA.x, origin.y, 0), direction: DOWN)
       ..shift(UP / 2.5);
     var bTriangle = Triangle()
-      ..scale(0.05)
+      ..scaleUniformly(0.05)
       ..nextToPoint(Vector3(ptB.x, origin.y, 0), direction: DOWN)
       ..shift(UP / 2.5);
     var dashedLineA = DashedLine(start: aTriangle.getCenter(), end: ptA)
@@ -185,17 +183,17 @@ class LogoScene extends Scene {
   }
 
   void addText() {
-    var manim = Text('Manim')
-      ..scale(4)
+    var manim = MathTex(r'\text{Manim}')
+      ..scaleUniformly(4)
       ..shift(RIGHT * 2.8 + DOWN / 2);
-    var web = Text('web')
-      ..scale(2)
+    var web = MathTex(r'\text{web}')
+      ..scaleUniformly(2)
       ..shift(RIGHT * 6.2 + DOWN * 1.3);
-    var subtitle = Text('Mathematical Animation Engine')
-      ..scale(2)
-      ..toEdge(edge: DOWN, buffer: LARGE_BUFFER);
-    var subtitle2 = Text('for the web')
-      ..scale(1.5)
+    var subtitle = MathTex(r'\text{Mathematical Animation Engine}')
+      ..scaleUniformly(2)
+      ..toEdge(edge: DOWN, buffer: MED_LARGE_BUFFER);
+    var subtitle2 = MathTex(r'\text{for the web}')
+      ..scaleUniformly(1.5)
       ..toEdge(edge: DOWN, buffer: SMALL_BUFFER);
 
     add([manim, web, subtitle, subtitle2]);

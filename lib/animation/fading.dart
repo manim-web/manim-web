@@ -1,3 +1,5 @@
+library animation.fading;
+
 import 'package:manim_web/animation/transform.dart';
 import 'package:manim_web/constants.dart';
 import 'package:manim_web/mobject/types/mobject.dart';

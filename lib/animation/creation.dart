@@ -1,3 +1,5 @@
+library animation.creation;
+
 import 'package:manim_web/constants.dart';
 import 'package:manim_web/mobject/types/mobject.dart';
 import 'package:manim_web/util/rate_functions.dart';

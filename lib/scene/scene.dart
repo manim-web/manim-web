@@ -41,6 +41,7 @@ abstract class Scene {
     } on EndSceneEarlyException {
       print('An EndSceneEarlyException has occured');
     }
+    resetCamera();
     render();
     tearDown();
 

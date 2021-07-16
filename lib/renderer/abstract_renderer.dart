@@ -1,5 +1,4 @@
 import 'package:manim_web/display/abstract_display.dart';
-import 'package:manim_web/mobject/text_mobject.dart';
 import 'package:manim_web/mobject/types/mobject.dart';
 import 'package:manim_web/mobject/types/vectorized_mobject.dart';
 import 'package:manim_web/util/color.dart';
@@ -33,10 +32,6 @@ abstract class AbstractRenderer {
 
   void renderVMobject(VMobject mob);
   void renderVMobjects(List<VMobject> mobs);
-
-  // TODO Remove this
-  void renderText(Text mob);
-  void renderTexts(List<Text> mobs);
 
   Future<double> nextFrame();
 }

@@ -76,70 +76,53 @@ class NumberLine extends Line {
     double xMax = FRAME_X_RADIUS,
   }) =>
       NumberLine(
-          color: config.color ?? LIGHT_GRAY,
-          unitSize: config.unitSize ?? 1,
-          includeTicks: config.includeTicks ?? true,
-          tickSize: config.tickSize ?? 0.1,
-          tickFrequency: config.tickFrequency ?? 1,
-          leftmostTick: config.leftmostTick,
-          numbersWithElongatedTicks: config.numbersWithElongatedTicks ?? [0],
-          includeNumbers: config.includeNumbers ?? false,
-          numbersToShow: config.numbersToShow,
-          longTickMultiple: config.longTickMultiple ?? 2,
-          numberAtCenter: config.numberAtCenter ?? 0,
-          numberScaleVal: config.numberScaleVal ?? 0.75,
-          labelDirection: config.labelDirection ?? DOWN,
-          lineToNumberBuff: config.lineToNumberBuff ?? MED_SMALL_BUFFER,
-          includeTip: config.includeTip ?? true,
-          tipWidth: config.tipWidth ?? 0.25,
-          tipHeight: config.tipHeight ?? 0.25,
-          decimalNumberConfig: config.decimalNumberConfig,
-          excludeZeroFromDefaultNumbers:
-              config.excludeZeroFromDefaultNumbers ?? true,
-          strokeWidth: config.strokeWidth ?? DEFAULT_STROKE_WIDTH,
-          xMax: xMax,
-          xMin: xMin);
+        color: config.color ?? LIGHT_GRAY,
+        unitSize: config.unitSize ?? 1,
+        includeTicks: config.includeTicks ?? true,
+        tickSize: config.tickSize ?? 0.1,
+        tickFrequency: config.tickFrequency ?? 1,
+        leftmostTick: config.leftmostTick,
+        numbersWithElongatedTicks: config.numbersWithElongatedTicks ?? [0],
+        includeNumbers: config.includeNumbers ?? false,
+        numbersToShow: config.numbersToShow,
+        longTickMultiple: config.longTickMultiple ?? 2,
+        numberAtCenter: config.numberAtCenter ?? 0,
+        numberScaleVal: config.numberScaleVal ?? 0.75,
+        labelDirection: config.labelDirection ?? DOWN,
+        lineToNumberBuff: config.lineToNumberBuff ?? MED_SMALL_BUFFER,
+        includeTip: config.includeTip ?? true,
+        tipWidth: config.tipWidth ?? 0.25,
+        tipHeight: config.tipHeight ?? 0.25,
+        decimalNumberConfig: config.decimalNumberConfig,
+        excludeZeroFromDefaultNumbers:
+            config.excludeZeroFromDefaultNumbers ?? true,
+        xMax: xMax,
+        xMin: xMin,
+      )..setStroke(width: config.strokeWidth ?? DEFAULT_STROKE_WIDTH);
 
-  NumberLine(
-      {Color color = LIGHT_GREY,
-      this.xMin = -FRAME_X_RADIUS,
-      this.xMax = FRAME_X_RADIUS,
-      this.unitSize = 1,
-      this.includeTicks = true,
-      this.tickSize = 0.1,
-      this.tickFrequency = 1,
-      this.leftmostTick,
-      this.numbersWithElongatedTicks = const [0],
-      this.includeNumbers = false,
-      this.numbersToShow,
-      this.longTickMultiple = 2,
-      this.numberAtCenter = 0,
-      this.numberScaleVal = 0.75,
-      this.labelDirection = DOWN,
-      this.lineToNumberBuff = MED_SMALL_BUFFER,
-      this.includeTip = true,
-      this.tipWidth = 0.25,
-      this.tipHeight = 0.25,
-      this.decimalNumberConfig,
-      this.excludeZeroFromDefaultNumbers = false,
-      double strokeWidth = DEFAULT_STROKE_WIDTH,
-      Color? backgroundStrokeColor,
-      double backgroundStrokeWidth = 0.0,
-      double sheenFactor = 0.0,
-      Vector3 sheenDirection = UR,
-      bool makeSmoothAfterApplyingFunctions = false,
-      bool closeNewPoints = false})
-      : super(
-          fillColor: color,
-          strokeColor: color,
-          strokeWidth: strokeWidth,
-          backgroundStrokeColor: backgroundStrokeColor,
-          backgroundStrokeWidth: backgroundStrokeWidth,
-          sheenFactor: sheenFactor,
-          sheenDirection: sheenDirection,
-          makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-          closeNewPoints: closeNewPoints,
-        ) {
+  NumberLine({
+    Color color = LIGHT_GREY,
+    this.xMin = -FRAME_X_RADIUS,
+    this.xMax = FRAME_X_RADIUS,
+    this.unitSize = 1,
+    this.includeTicks = true,
+    this.tickSize = 0.1,
+    this.tickFrequency = 1,
+    this.leftmostTick,
+    this.numbersWithElongatedTicks = const [0],
+    this.includeNumbers = false,
+    this.numbersToShow,
+    this.longTickMultiple = 2,
+    this.numberAtCenter = 0,
+    this.numberScaleVal = 0.75,
+    this.labelDirection = DOWN,
+    this.lineToNumberBuff = MED_SMALL_BUFFER,
+    this.includeTip = true,
+    this.tipWidth = 0.25,
+    this.tipHeight = 0.25,
+    this.decimalNumberConfig,
+    this.excludeZeroFromDefaultNumbers = false,
+  }) : super(color: color) {
     tipLength = max(tipWidth, tipHeight);
 
     if (includeTip) {
@@ -259,42 +242,27 @@ abstract class CoordinateSystem extends VGroup {
 
   // TODO getAxisLabel, getXAxisLabel, getYAxisLabel, getAxisLabels
 
-  ParametricFunction getGraph(
+  FunctionGraph getGraph(
     double Function(double) function, {
     double stepSize = 0.01, // use a step size <= 0 for automatic step size
     double? xMin,
     double? xMax,
     double dt = 1e-8,
     List<double> discontinuities = const [],
-    Color? strokeColor,
-    double strokeWidth = DEFAULT_STROKE_WIDTH,
-    Color? backgroundStrokeColor,
-    double backgroundStrokeWidth = 0.0,
-    bool closeNewPoints = false,
-    double preFunctionHandleToAnchorScaleFactor = 0.01,
-    bool makeSmoothAfterApplyingFunctions = false,
-    double toleranceForPointEquality = 1e-6,
+    Color color = WHITE,
   }) {
     xMin ??= this.xMin;
     xMax ??= this.xMax;
 
-    var graph = ParametricFunction(
-      parametricFunction: (t) => coordsToPoint(Vector3(t, function(t), 0)),
+    var graph = FunctionGraph(
+      function: function,
       stepSize: stepSize,
-      tMin: xMin,
-      tMax: xMax,
+      xMin: xMin,
+      xMax: xMax,
       dt: dt,
       discontinuities: discontinuities,
-      strokeColor: strokeColor,
-      strokeWidth: strokeWidth,
-      backgroundStrokeColor: backgroundStrokeColor,
-      backgroundStrokeWidth: backgroundStrokeWidth,
-      closeNewPoints: closeNewPoints,
-      preFunctionHandleToAnchorScaleFactor:
-          preFunctionHandleToAnchorScaleFactor,
-      makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-      toleranceForPointEquality: toleranceForPointEquality,
-    );
+      color: color,
+    )..applyFunction((pt) => coordsToPoint(pt));
 
     return graph;
   }
@@ -306,14 +274,7 @@ abstract class CoordinateSystem extends VGroup {
     double tMax = 1,
     double dt = 1e-8,
     List<double> discontinuities = const [],
-    Color? strokeColor,
-    double strokeWidth = DEFAULT_STROKE_WIDTH,
-    Color? backgroundStrokeColor,
-    double backgroundStrokeWidth = 0.0,
-    bool closeNewPoints = false,
-    double preFunctionHandleToAnchorScaleFactor = 0.01,
-    bool makeSmoothAfterApplyingFunctions = false,
-    double toleranceForPointEquality = 1e-6,
+    Color color = WHITE,
   }) {
     var graph = ParametricFunction(
       parametricFunction: (t) => coordsToPoint(function(t)),
@@ -322,15 +283,7 @@ abstract class CoordinateSystem extends VGroup {
       tMax: tMax,
       dt: dt,
       discontinuities: discontinuities,
-      strokeColor: strokeColor,
-      strokeWidth: strokeWidth,
-      backgroundStrokeColor: backgroundStrokeColor,
-      backgroundStrokeWidth: backgroundStrokeWidth,
-      closeNewPoints: closeNewPoints,
-      preFunctionHandleToAnchorScaleFactor:
-          preFunctionHandleToAnchorScaleFactor,
-      makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-      toleranceForPointEquality: toleranceForPointEquality,
+      color: color,
     );
 
     return graph;
@@ -474,8 +427,6 @@ class NumberPlane extends Axes {
       strokeWidth: 1,
       strokeColors: [BLUE_D],
       fillColors: [],
-      sheenDirection: ORIGIN,
-      sheenFactor: 0,
       backgroundStrokeColors: [],
       backgroundStrokeWidth: 0);
 
@@ -541,8 +492,6 @@ class NumberPlane extends Axes {
       backgroundStrokeColors: backgroundLineStyle.backgroundStrokeColors,
       backgroundStrokeWidth: backgroundLineStyle.backgroundStrokeWidth * 0.5,
       fillColors: [],
-      sheenDirection: ORIGIN,
-      sheenFactor: 0,
       strokeColors: [
         for (var color in backgroundLineStyle.strokeColors ?? <Color>[])
           color.withTransparency(color.a * 0.5)
@@ -613,34 +562,20 @@ class NumberPlane extends Axes {
   double getXUnitSize() => xAxis.getUnitSize();
   double getYUnitSize() => yAxis.getUnitSize();
 
-  Vector getVector(Vector3 coords,
-      {double buff = 0,
-      double? pathArc,
-      Color? fillColor,
-      Color? strokeColor,
-      double strokeWidth = 6,
-      Color? backgroundStrokeColor,
-      double backgroundStrokeWidth = 0.0,
-      double sheenFactor = 0.0,
-      Vector3 sheenDirection = UR,
-      bool makeSmoothAfterApplyingFunctions = false,
-      bool closeNewPoints = false}) {
-    return Vector(
-      start: getCenterPoint(),
-      end: c2p(coords),
-      buff: buff,
-      pathArc: pathArc,
-      fillColor: fillColor,
-      strokeColor: strokeColor,
-      strokeWidth: strokeWidth,
-      backgroundStrokeColor: backgroundStrokeColor,
-      backgroundStrokeWidth: backgroundStrokeWidth,
-      sheenFactor: sheenFactor,
-      sheenDirection: sheenDirection,
-      makeSmoothAfterApplyingFunctions: makeSmoothAfterApplyingFunctions,
-      closeNewPoints: closeNewPoints,
-    );
-  }
+  Vector getVector(
+    Vector3 coords, {
+    double buff = 0,
+    double? pathArc,
+    Color? fillColor,
+    Color color = WHITE,
+  }) =>
+      Vector(
+        start: getCenterPoint(),
+        end: c2p(coords),
+        buff: buff,
+        pathArc: pathArc,
+        color: color,
+      );
 
   void prepareForNonLinearTransform({int targetNumberOfCurves = 50}) {
     for (var mob in getVectorizedFamily()) {

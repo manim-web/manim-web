@@ -1,7 +1,8 @@
 @font-face {
-  font-family: 'KaTeX_Main';
-  src: url('./KaTeX_Main-Regular.ttf') format('truetype');
-}@font-face {
-  font-family: 'KaTeX_Math';
-  src: url('./KaTeX_Math-Italic.ttf') format('truetype');
+  font-family: "KaTeX_Main";
+  src: url("./KaTeX_Main-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "KaTeX_Math";
+  src: url("./KaTeX_Math-Italic.ttf") format("truetype");
 }

@@ -2,6 +2,7 @@ import 'dart:html';
 
 import 'package:manim_web/display/canvas_2d_display.dart';
 import 'package:manim_web/manim.dart';
+import 'package:manim_web/mobject/svg/web_tex_mobject.dart';
 
 void main() {
   runScene(ComplexExponentialScene());
@@ -20,6 +21,7 @@ class ComplexExponentialScene extends Scene {
   late Vector rotatingArrow;
   late Vector rotatedRotatingArrow;
   late Vector originalArrow;
+  late MathTex formula;
 
   late EventListener positionListener;
 
@@ -44,6 +46,7 @@ class ComplexExponentialScene extends Scene {
     await shiftArrows();
     await rotateArrows();
     await fadeArrows();
+    await addFormula();
     await addRotatingArrow();
 
     while (true) {
@@ -52,6 +55,14 @@ class ComplexExponentialScene extends Scene {
 
       toggleInteractivity();
     }
+  }
+
+  Future addFormula() async {
+    formula = MathTex(r'e^{i\theta}')
+      ..scaleUniformly(2)
+      ..toEdge(edge: RIGHT)
+      ..shift(UP);
+    await play(ShowCreation(formula));
   }
 
   Future createPlane() async {

@@ -15,7 +15,6 @@ export 'package:manim_web/animation/update.dart';
 export 'package:manim_web/camera/camera.dart';
 
 // ./mobject/
-export 'package:manim_web/mobject/text_mobject.dart';
 export 'package:manim_web/mobject/functions.dart';
 export 'package:manim_web/mobject/geometry.dart';
 export 'package:manim_web/mobject/shape_matchers.dart';
@@ -26,14 +25,14 @@ export 'package:manim_web/mobject/types/mobject.dart';
 export 'package:manim_web/mobject/types/vectorized_mobject.dart';
 export 'package:manim_web/mobject/types/interactive_mobject.dart';
 
+// ./mobject/svg/
+export 'package:manim_web/mobject/svg/svg_mobject.dart';
+
 // ./display/
 export 'package:manim_web/display/abstract_display.dart';
-// abstract_html_display.dart isn't exported since it may cause problems if executed in another environment than the web.
-// canvas_2d_display.dart isn't exported since it may cause problems if executed in another environment than the web.
 
 // ./renderer/
 export 'package:manim_web/renderer/abstract_renderer.dart';
-// canvas_2d_renderer.dart isn't exported since it may cause problems if executed in another environment than the web.
 
 // ./scene/
 export 'package:manim_web/scene/scene.dart';

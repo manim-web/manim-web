@@ -16,14 +16,12 @@ typedef BezierTuple = Tuple4<Vector3, Vector3, Vector3, Vector3>;
 typedef SubPath = List<Vector3>;
 
 class VMobject extends Mobject {
-  double strokeWidth;
-  double backgroundStrokeWidth;
-  double sheenFactor;
-  Vector3 sheenDirection;
-  bool closeNewPoints;
-  double preFunctionHandleToAnchorScaleFactor;
-  bool makeSmoothAfterApplyingFunctions;
-  double toleranceForPointEquality;
+  double strokeWidth = DEFAULT_STROKE_WIDTH;
+  double backgroundStrokeWidth = 0;
+  bool closeNewPoints = false;
+  double preFunctionHandleToAnchorScaleFactor = 0.01;
+  bool makeSmoothAfterApplyingFunctions = false;
+  double toleranceForPointEquality = 1e-6;
 
   int nPointsPerCurve = 4;
 
@@ -31,29 +29,7 @@ class VMobject extends Mobject {
   List<Color>? strokeColors;
   List<Color>? backgroundStrokeColors;
 
-  VMobject({
-    Color? fillColor,
-    Color? strokeColor,
-    this.strokeWidth = DEFAULT_STROKE_WIDTH,
-    Color? backgroundStrokeColor,
-    this.backgroundStrokeWidth = 0.0,
-    this.sheenFactor = 0.0,
-    this.sheenDirection = UR,
-    this.closeNewPoints = false,
-    this.preFunctionHandleToAnchorScaleFactor = 0.01,
-    this.makeSmoothAfterApplyingFunctions = false,
-    this.toleranceForPointEquality = 1e-6,
-  }) : super() {
-    if (fillColor != null) {
-      fillColors = [fillColor];
-    }
-    if (strokeColor != null) {
-      strokeColors = [strokeColor];
-    }
-    if (backgroundStrokeColor != null) {
-      backgroundStrokeColors = [backgroundStrokeColor];
-    }
-  }
+  VMobject({Color color = WHITE}) : super(color: color);
 
   VMobject.copyFrom(VMobject vmob)
       : fillColors = [...vmob.fillColors?.map((c) => c.copy()) ?? []],
@@ -63,8 +39,6 @@ class VMobject extends Mobject {
         ],
         strokeWidth = vmob.strokeWidth,
         backgroundStrokeWidth = vmob.backgroundStrokeWidth,
-        sheenFactor = vmob.sheenFactor,
-        sheenDirection = vmob.sheenDirection.copy(),
         closeNewPoints = vmob.closeNewPoints,
         preFunctionHandleToAnchorScaleFactor =
             vmob.preFunctionHandleToAnchorScaleFactor,
@@ -98,11 +72,6 @@ class VMobject extends Mobject {
     setBackgroundStroke(
       colors: backgroundStrokeColors,
       width: backgroundStrokeWidth,
-    );
-
-    setSheen(
-      factor: sheenFactor,
-      direction: sheenDirection,
     );
   }
 
@@ -201,9 +170,9 @@ class VMobject extends Mobject {
     return setStyle(
         fillColors: style.fillColors,
         strokeColors: style.strokeColors,
+        strokeWidth: style.strokeWidth,
         backgroundStrokeColors: style.backgroundStrokeColors,
-        sheenFactor: style.sheenFactor,
-        sheenDirection: style.sheenDirection,
+        backgroundStrokeWidth: style.backgroundStrokeWidth,
         family: family);
   }
 
@@ -216,8 +185,6 @@ class VMobject extends Mobject {
       Color? backgroundStrokeColor,
       List<Color>? backgroundStrokeColors,
       double? backgroundStrokeWidth,
-      double? sheenFactor,
-      Vector3? sheenDirection,
       bool family = true}) {
     setFill(
       color: fillColor,
@@ -237,14 +204,6 @@ class VMobject extends Mobject {
         colors: backgroundStrokeColors,
         width: backgroundStrokeWidth,
         family: family);
-
-    if (sheenFactor != null) {
-      setSheen(
-        factor: sheenFactor,
-        direction: sheenDirection,
-        family: family,
-      );
-    }
   }
 
   @override
@@ -270,8 +229,6 @@ class VMobject extends Mobject {
       strokeWidth: getStrokeWidth(),
       backgroundStrokeColors: getStrokeColors(background: true),
       backgroundStrokeWidth: getStrokeWidth(background: true),
-      sheenFactor: getSheenFactor(),
-      sheenDirection: getSheenDirection(),
     );
   }
 
@@ -342,47 +299,8 @@ class VMobject extends Mobject {
     return colors;
   }
 
-  void setSheenDirection(Vector3 direction, {bool family = true}) {
-    if (family) {
-      for (var submob in getVectorizedFamily()) {
-        submob.sheenDirection = direction.copy();
-      }
-    } else {
-      sheenDirection = direction.copy();
-    }
-  }
-
-  void setSheen(
-      {required double factor, Vector3? direction, bool family = true}) {
-    if (family) {
-      for (var submob in submobjects) {
-        if (submob is VMobject) {
-          submob.setSheen(factor: factor, direction: direction, family: true);
-        }
-      }
-    }
-
-    sheenFactor = factor;
-    if (direction != null) {
-      setSheenDirection(direction, family: false);
-    }
-
-    if (factor != 0) {
-      setStroke(colors: getStrokeColors(), family: family);
-      setStroke(colors: getStrokeColors(), family: family);
-    }
-  }
-
-  Vector3 getSheenDirection() {
-    return sheenDirection.copy();
-  }
-
-  double getSheenFactor() {
-    return sheenFactor;
-  }
-
   Tuple2<Vector3, Vector3> getGradientStartAndEndPoints() {
-    var direction = getSheenDirection();
+    var direction = RIGHT;
     var c = getCenter();
 
     var bases = Array(values: [
@@ -483,6 +401,20 @@ class VMobject extends Mobject {
       }
 
       appendPoints([lastH2, handle1, handle2, anchor]);
+    }
+  }
+
+  void addQuadraticBezierCurveTo(Vector3 handle, Vector3 anchor) {
+    addCubicBezierCurveTo(
+      handle * (2 / 3) + getLastPoint() * (1 / 3),
+      handle * (2 / 3) + anchor * (1 / 3),
+      anchor,
+    );
+  }
+
+  void closePath() {
+    if (!isClosed()) {
+      addLineTo(getSubpaths().last[0]);
     }
   }
 
@@ -962,9 +894,6 @@ class VMobject extends Mobject {
     strokeWidth = interpolateValue(mob1.strokeWidth, mob2.strokeWidth, alpha);
     backgroundStrokeWidth = interpolateValue(
         mob1.backgroundStrokeWidth, mob2.backgroundStrokeWidth, alpha);
-    sheenDirection =
-        interpolateValue(mob1.sheenDirection, mob2.sheenDirection, alpha);
-    sheenFactor = interpolateValue(mob1.sheenFactor, mob2.sheenFactor, alpha);
 
     var copyColors = (List<Color> colors) => [...colors.map((c) => c.copy())];
 
@@ -978,8 +907,6 @@ class VMobject extends Mobject {
           : null;
       strokeWidth = mob2.strokeWidth;
       backgroundStrokeWidth = mob2.backgroundStrokeWidth;
-      sheenDirection = mob2.sheenDirection.copy();
-      sheenFactor = mob2.sheenFactor;
     }
   }
 
@@ -1048,7 +975,7 @@ class VMobject extends Mobject {
     return DashedVMobject(this,
         numDashes: numDashes,
         positiveSpaceRatio: positiveSpaceRatio,
-        color: color);
+        color: color ?? getColor());
   }
 }
 
@@ -1058,8 +985,6 @@ class VMobjectStyle {
   final double strokeWidth;
   final List<Color>? backgroundStrokeColors;
   final double backgroundStrokeWidth;
-  final double sheenFactor;
-  final Vector3 sheenDirection;
 
   const VMobjectStyle({
     required this.fillColors,
@@ -1067,8 +992,6 @@ class VMobjectStyle {
     required this.strokeWidth,
     required this.backgroundStrokeColors,
     required this.backgroundStrokeWidth,
-    required this.sheenFactor,
-    required this.sheenDirection,
   });
 
   VMobjectStyle.copyFrom(VMobjectStyle style)
@@ -1082,9 +1005,7 @@ class VMobjectStyle {
         backgroundStrokeColors = style.backgroundStrokeColors != null
             ? [for (var c in style.backgroundStrokeColors!) c.copy()]
             : null,
-        backgroundStrokeWidth = style.backgroundStrokeWidth,
-        sheenFactor = style.sheenFactor,
-        sheenDirection = style.sheenDirection;
+        backgroundStrokeWidth = style.backgroundStrokeWidth;
 
   VMobjectStyle copy() => VMobjectStyle.copyFrom(this);
 
@@ -1094,8 +1015,6 @@ class VMobjectStyle {
     double? strokeWidth,
     List<Color>? backgroundStrokeColors,
     double? backgroundStrokeWidth,
-    double? sheenFactor,
-    Vector3? sheenDirection,
   }) {
     var _fillColors = fillColors ?? this.fillColors;
     var _strokeColors = strokeColors ?? this.strokeColors;
@@ -1104,8 +1023,6 @@ class VMobjectStyle {
         backgroundStrokeColors ?? this.backgroundStrokeColors;
     var _backgroundStrokeWidth =
         backgroundStrokeWidth ?? this.backgroundStrokeWidth;
-    var _sheenFactor = sheenFactor ?? this.sheenFactor;
-    var _sheenDirection = sheenDirection ?? this.sheenDirection;
 
     return VMobjectStyle(
       fillColors: _fillColors,
@@ -1113,8 +1030,6 @@ class VMobjectStyle {
       strokeWidth: _strokeWidth,
       backgroundStrokeColors: _backgroundStrokeColors,
       backgroundStrokeWidth: _backgroundStrokeWidth,
-      sheenFactor: _sheenFactor,
-      sheenDirection: _sheenDirection,
     );
   }
 }
@@ -1140,11 +1055,7 @@ class VectorizedPoint extends VMobject {
     double strokeWidth = DEFAULT_STROKE_WIDTH,
     this.artificialWidth = 0.01,
     this.artificialHeight = 0.01,
-  }) : super(
-          fillColor: color,
-          strokeColor: color,
-          strokeWidth: strokeWidth,
-        ) {
+  }) : super(color: color) {
     setPoints([location]);
   }
 
@@ -1194,9 +1105,12 @@ class CurvesAsSubmobjects extends VGroup {
 }
 
 class DashedVMobject extends VMobject {
-  DashedVMobject(VMobject vmob,
-      {int numDashes = 15, double positiveSpaceRatio = 0.5, Color? color})
-      : super(strokeColor: color ?? WHITE, fillColor: color ?? WHITE) {
+  DashedVMobject(
+    VMobject vmob, {
+    int numDashes = 15,
+    double positiveSpaceRatio = 0.5,
+    Color color = WHITE,
+  }) : super(color: color) {
     if (numDashes > 0) {
       var fullDAlpha = 1 / numDashes;
       var partialDAlpha = fullDAlpha * positiveSpaceRatio;

@@ -354,6 +354,24 @@ class Array {
 
     return '$header\n$content';
   }
+
+  Array reshape(int m, int n) {
+    var flatten = flat();
+    assert(flatten.length == m * n);
+    var array = Array.fromValue(0, shape: Tuple2(m, n));
+
+    for (var kVal in enumerate(flatten)) {
+      var k = kVal.item1;
+      var val = kVal.item2;
+
+      var i = k % m;
+      var j = k ~/ m;
+
+      array.values[i][j] = val;
+    }
+
+    return array;
+  }
 }
 
 Array rotationMatrix(double angle, Vector3 axis) {

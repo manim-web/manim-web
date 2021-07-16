@@ -2,9 +2,9 @@ name: Checks
 
 on:
   push:
-    branches: [ $default-branch ]
+    branches: [master]
   pull_request:
-    branches: [ $default-branch ]
+    branches: [master]
 
 jobs:
   run_checks:
@@ -21,7 +21,7 @@ jobs:
         run: dart format --output=none --set-exit-if-changed .
 
       - name: Run checks
-        run: dart run tool/checks/run_all_checks
+        run: dart run tool/checks/run_all_checks.dart
 
       - name: Analyze project source
         run: dart analyze

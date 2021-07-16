@@ -1,3 +1,5 @@
+library animation;
+
 import 'package:collection/collection.dart';
 
 import 'package:manim_web/scene/scene.dart';

@@ -1,7 +1,7 @@
-import 'package:manim_web/display/abstract_display.dart';
-import 'package:manim_web/mobject/text_mobject.dart';
+library camera;
 
 import 'package:manim_web/constants.dart';
+import 'package:manim_web/display/abstract_display.dart';
 import 'package:manim_web/mobject/types/mobject.dart';
 import 'package:manim_web/mobject/types/vectorized_mobject.dart';
 import 'package:manim_web/util/array.dart';
@@ -81,12 +81,8 @@ class Camera {
 
   void render(List<Mobject> mobjects) {
     for (var mobject in extractMobjectFamilyMembers(mobjects).reversed) {
-      // TODO remove Text when Text Vmobject properly implemented
-      // TODO add PMobject, AbstractImageMobject
       if (mobject is VMobject) {
         display.renderer.renderVMobject(mobject);
-      } else if (mobject is Text) {
-        display.renderer.renderText(mobject);
       } else {
         display.renderer.renderMobject(mobject);
       }

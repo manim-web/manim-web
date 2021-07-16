@@ -27,8 +27,8 @@ class Mobject {
     submobjects = [];
     updatingSuspended = false;
     resetPoints();
-    generatePoints();
     initColors();
+    generatePoints();
   }
 
   @override
@@ -224,7 +224,15 @@ class Mobject {
     return applyOverPoints(func: (pt) => pt + delta);
   }
 
-  void scale(double scaleFactor,
+  void scale(Vector3 scaleFactor,
+      {Vector3? aboutPoint, Vector3 aboutEdge = ORIGIN}) {
+    return applyOverPoints(
+        func: (pt) => pt * scaleFactor,
+        aboutPoint: aboutPoint,
+        aboutEdge: aboutEdge);
+  }
+
+  void scaleUniformly(double scaleFactor,
       {Vector3? aboutPoint, Vector3 aboutEdge = ORIGIN}) {
     return applyOverPoints(
         func: (pt) => pt * scaleFactor,
@@ -425,7 +433,8 @@ class Mobject {
       this.stretch(length / oldLength, dim,
           aboutEdge: aboutEdge, aboutPoint: aboutPoint);
     } else {
-      scale(length / oldLength, aboutEdge: aboutEdge, aboutPoint: aboutPoint);
+      scaleUniformly(length / oldLength,
+          aboutEdge: aboutEdge, aboutPoint: aboutPoint);
     }
   }
 
@@ -486,9 +495,9 @@ class Mobject {
 
   void spaceOutSubmobjects(
       {double factor = 1.5, Vector3 aboutEdge = ORIGIN, Vector3? aboutPoint}) {
-    scale(factor, aboutEdge: aboutEdge, aboutPoint: aboutPoint);
+    scaleUniformly(factor, aboutEdge: aboutEdge, aboutPoint: aboutPoint);
     for (var submob in submobjects) {
-      submob.scale(1.0 / factor);
+      submob.scaleUniformly(1.0 / factor);
     }
   }
 
@@ -531,7 +540,7 @@ class Mobject {
 
     replace(mob, dimToMatch: dimToMatch, stretch: stretch);
     var length = mob.lengthOverDim(dimToMatch);
-    scale((length + buffer) / length);
+    scaleUniformly((length + buffer) / length);
   }
 
   void putStartAndEndOn(
@@ -548,7 +557,8 @@ class Mobject {
 
     var targetVec = end - start;
 
-    scale(targetVec.norm() / currentVec.norm(), aboutPoint: currentStart);
+    scaleUniformly(targetVec.norm() / currentVec.norm(),
+        aboutPoint: currentStart);
     rotate(targetVec.angle() - currentVec.angle(), aboutPoint: currentStart);
     shift(start - currentStart);
   }
@@ -764,7 +774,13 @@ class Mobject {
   }
 
   double lengthOverDim(int dim) {
-    var components = getAllPoints().map((pt) => pt.getComponent(dim));
+    var pts = getAllPoints();
+
+    if (pts.isEmpty) {
+      return 1;
+    }
+
+    var components = pts.map((pt) => pt.getComponent(dim));
     var minPos = components.reduce(min);
     var maxPos = components.reduce(max);
     return maxPos - minPos;
@@ -1038,6 +1054,16 @@ class Mobject {
 
     for (var mobs in IterableZip([submobjects, mob.submobjects])) {
       mobs[0].alignData(mobs[1]);
+    }
+  }
+
+  void reverseSubmobjects({bool recursive = false}) {
+    submobjects = [for (var submob in submobjects.reversed) submob];
+
+    if (recursive) {
+      for (var submob in submobjects) {
+        submob.reverseSubmobjects(recursive: true);
+      }
     }
   }
 

@@ -1,6 +1,7 @@
 import 'dart:html';
 
 import 'package:manim_web/display/canvas_2d_display.dart';
+import 'package:manim_web/mobject/svg/web_tex_mobject.dart';
 import 'package:manim_web/manim.dart';
 
 const resolution = 1;
@@ -21,8 +22,8 @@ class FourierScene extends Scene {
   late SurroundingRectangle frequencyBox;
   late Dot centerOfMass;
   late Dot fourierDot;
-  late ParametricFunction fourierGraph;
-  late ParametricFunction wave;
+  late FunctionGraph fourierGraph;
+  late FunctionGraph wave;
   late ParametricFunction polarized;
   late VMobject partialFourierGraph;
 
@@ -45,6 +46,15 @@ class FourierScene extends Scene {
     makeInteractive();
 
     await continueRendering();
+  }
+
+  @override
+  void setup() {
+    // preload all digits
+    for (var i in range(end: 9)) {
+      SingleStringMathTex(i.toString());
+    }
+    SingleStringMathTex('.');
   }
 
   Future addAllAxes() async {
@@ -74,13 +84,26 @@ class FourierScene extends Scene {
       dot..moveToPoint(partialFourierGraph.getStart());
 
   Future addText() async {
-    var windingText = Text('')
-      ..nextToMobject(circlePlane, direction: UP)
-      ..shift(DOWN / 2)
+    var windingFreqTex = Number(windingFrequency)..setColor(color: LIGHT_GRAY);
+
+    var windingUnits = MathTex(r'\text{cycles} / \text{second}')
       ..setColor(color: LIGHT_GRAY);
-    await play(FadeIn(windingText));
-    windingText.addUpdater((_, dt) => windingText
-      ..content = '${windingFrequency.toStringAsFixed(2)} cycles / second');
+
+    VGroup([windingFreqTex, windingUnits])
+      ..scaleUniformly(0.8)
+      ..arrange(buffer: SMALL_BUFFER)
+      ..nextToMobject(circlePlane, direction: UP);
+
+    await playMany([FadeIn(windingFreqTex), FadeIn(windingUnits)]);
+
+    windingFreqTex.addUpdater((mob, dt) {
+      windingFreqTex
+        ..changeValue(windingFrequency)
+        ..scaleUniformly(0.8)
+        ..setColor(color: LIGHT_GRAY);
+
+      return mob;
+    });
   }
 
   Future showFourierGraphCreation() async {
@@ -124,7 +147,8 @@ class FourierScene extends Scene {
   Mobject draggableDotOnFunctionUpdater(Mobject dot, double dt) {
     var coords = frequencyAxes.pointToCoords(fourierDot.getPos());
     var x = clip(coords.x, 0, 5).toDouble();
-    var pt = fourierGraph.getPointFromParametricFunction(x);
+    var y = fourierGraph.getValueFromFunction(x);
+    var pt = frequencyAxes.c2p(Vector3(x, y, 0));
     fourierDot.moveToPoint(pt);
 
     windingFrequency = x;
@@ -133,7 +157,7 @@ class FourierScene extends Scene {
     return dot;
   }
 
-  ParametricFunction getFourierGraph(ParametricFunction wave) {
+  FunctionGraph getFourierGraph(FunctionGraph wave) {
     return frequencyAxes.getGraph((x) => getFourierTransform(x, wave).real,
         stepSize: 0.05 / resolution);
   }
@@ -196,12 +220,12 @@ class FourierScene extends Scene {
 
   NumberPlane addCirclePlane() {
     circlePlane = NumberPlane(xMin: -2.1, yMin: -2.1, yMax: 2.1, xMax: 2.1)
-      ..scale(0.8)
+      ..scaleUniformly(0.8)
       ..toCorner(corner: DL);
 
     dashedCircle = Circle().getDashed(numDashes: 50)
       ..setStroke(width: DEFAULT_STROKE_WIDTH / 2)
-      ..scale(0.8)
+      ..scaleUniformly(0.8)
       ..shift(circlePlane.coordsToPoint(ORIGIN));
 
     circlePlane.addToFront([dashedCircle]);
@@ -232,14 +256,14 @@ class FourierScene extends Scene {
     return frequencyAxes;
   }
 
-  ParametricFunction getTimeGraph(double Function(double) func,
+  FunctionGraph getTimeGraph(double Function(double) func,
       [double stepSize = 0.05 / resolution]) {
     return timeAxes.getGraph(func, stepSize: stepSize)
       ..setStroke(color: YELLOW_C)
       ..setFill(color: TRANSPARENT);
   }
 
-  ParametricFunction getCosineWave(
+  FunctionGraph getCosineWave(
           {List<double> frequencies = const [2],
           double shiftVal = 1,
           double scaleVal = 0.9,
@@ -313,5 +337,51 @@ class FourierScene extends Scene {
           return pm;
         },
         runTime: runTime);
+  }
+}
+
+class Number extends VGroup {
+  late SingleStringMathTex a;
+  late SingleStringMathTex b;
+  late SingleStringMathTex c;
+  late SingleStringMathTex dot;
+  late VectorizedPoint pt;
+
+  late List<SingleStringMathTex> digits;
+
+  Number(double val) {
+    if (val > 10) {
+      val = 9.99;
+    } else if (val < 0) {
+      val = 0;
+    }
+
+    var str = val.toStringAsFixed(2);
+    dot = SingleStringMathTex('.');
+    a = SingleStringMathTex(str[0]);
+    b = SingleStringMathTex(str[2]);
+    c = SingleStringMathTex(str[3]);
+    pt = VectorizedPoint();
+    add([a, b, c, dot, pt]);
+    digits = [a, dot, b, c];
+
+    positionDigits();
+  }
+
+  void changeValue(double val) {
+    var str = val.toStringAsFixed(2);
+
+    a.become(SingleStringMathTex(str[0]));
+    b.become(SingleStringMathTex(str[2]));
+    c.become(SingleStringMathTex(str[3]));
+
+    positionDigits();
+  }
+
+  void positionDigits() {
+    VGroup(digits)
+      ..arrange(buffer: SMALL_BUFFER)
+      ..shift(pt.getPos());
+    dot.shift(DOWN * getHeight() * 0.4);
   }
 }
