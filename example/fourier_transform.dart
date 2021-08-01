@@ -1,7 +1,6 @@
 import 'dart:html';
 
 import 'package:manim_web/display/canvas_2d_display.dart';
-import 'package:manim_web/mobject/svg/web_tex_mobject.dart';
 import 'package:manim_web/manim.dart';
 
 const resolution = 1;

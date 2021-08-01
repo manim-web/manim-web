@@ -19,6 +19,8 @@ Finally, you can run the dev server with `webdev serve {folder}` to serve a fold
 You can find examples of animations built with Manim-Web [here](https://manim-web.github.io/manim-web/).
 The code is available in this repository, in the `example` folder.
 
+You can also serve examples with `webdev serve example`
+
 ## Contributing
 
 Contributions are always welcome whether it's code, documentation, examples or even improvements to make.

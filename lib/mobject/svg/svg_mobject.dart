@@ -9,7 +9,7 @@ import 'package:manim_web/util/array.dart';
 import 'package:manim_web/util/color.dart';
 import 'package:manim_web/util/math_functions.dart';
 import 'package:manim_web/util/space_ops.dart';
-import 'package:manim_web/util/string.dart';
+import 'package:manim_web/util/extensions.dart';
 import 'package:manim_web/util/vector.dart';
 import 'package:tuple/tuple.dart';
 

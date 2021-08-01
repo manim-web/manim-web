@@ -6,7 +6,9 @@ import 'package:manim_web/mobject/svg/svg_mobject.dart';
 import 'package:manim_web/mobject/types/vectorized_mobject.dart';
 import 'package:manim_web/util/array.dart';
 import 'package:manim_web/util/color.dart';
-import 'package:manim_web/util/string.dart';
+import 'package:manim_web/util/extensions.dart';
+import 'package:manim_web/util/tex_generation.dart';
+import 'package:tuple/tuple.dart';
 
 class TexSymbol extends SVGPathMobject {
   TexSymbol(String pathString) : super(pathString);
@@ -19,7 +21,7 @@ class TexSymbol extends SVGPathMobject {
 
 const TEX_MOB_SCALE_FACTOR = 0.0005;
 
-abstract class SingleStringMathTex extends SVGMobject {
+class SingleStringMathTex extends SVGMobject {
   String texString;
 
   @override
@@ -44,6 +46,18 @@ abstract class SingleStringMathTex extends SVGMobject {
     this.color = color;
   }
 
+  static Future preload(List<String> texStrings) async {
+    texStrings =
+        texStrings.uniqueValues.map((e) => getModifiedExpression(e)).toList();
+
+    var svgs = await Future.wait(
+        [for (var texString in texStrings) getSVG(texString)]);
+
+    for (var i in range(end: texStrings.length)) {
+      TexSVGCache[texStrings[i]] = svgs[i];
+    }
+  }
+
   static Map<String, String> TexSVGCache = {};
 
   void createMobject() {
@@ -52,7 +66,9 @@ abstract class SingleStringMathTex extends SVGMobject {
     if (TexSVGCache.containsKey(texString)) {
       content = TexSVGCache[texString]!;
     } else {
-      content = getSVG(texString);
+      print('$texString should be preloaded to improve performance');
+      var content = getSVG(texString).awaitSync();
+
       TexSVGCache[texString] = content;
     }
 
@@ -66,18 +82,21 @@ abstract class SingleStringMathTex extends SVGMobject {
     scaleUniformly(TEX_MOB_SCALE_FACTOR);
   }
 
-  String getSVG(String texString);
+  static Future<String> getSVG(String texString) {
+    var fullTexDocument = getTexDocument(texString);
+    return getTexSVG(fullTexDocument);
+  }
 
   @override
   String toString() => '${getName()}($texString)';
 
-  String getModifiedExpression(String texString) {
+  static String getModifiedExpression(String texString) {
     var result = texString.trim();
     result = modifySpecialStrings(texString);
     return result;
   }
 
-  String modifySpecialStrings(String tex) {
+  static String modifySpecialStrings(String tex) {
     var shouldAddFiller = (tex == r'\over' ||
         tex == r'\overline' ||
         tex == r'\sqrt' ||
@@ -122,7 +141,7 @@ abstract class SingleStringMathTex extends SVGMobject {
     return tex;
   }
 
-  String removeStrayBraces(String tex) {
+  static String removeStrayBraces(String tex) {
     var numLefts = tex.count('{') - tex.count(r'\{') + tex.count(r'\\{');
     var numRights = tex.count('}') - tex.count(r'\}') + tex.count(r'\\}');
 
@@ -153,7 +172,7 @@ abstract class SingleStringMathTex extends SVGMobject {
   String getTexString() => texString;
 }
 
-abstract class MathTex extends SingleStringMathTex {
+class MathTex extends SingleStringMathTex {
   String argSeparator;
   List<String> subStringToIsolate;
   Map<String, Color> texToColorMap;
@@ -166,11 +185,29 @@ abstract class MathTex extends SingleStringMathTex {
     this.texToColorMap = const {},
     this.subStringToIsolate = const [],
   }) : super.deferred(color: color) {
-    texStrings = breakUpTexStrings(originalTexString);
+    texStrings = breakUpTexStrings(
+      originalTexString,
+      subStringToIsolate,
+      texToColorMap,
+    );
     texString = texStrings.join(argSeparator);
     createMobject();
     breakUpBySubstrings();
     setColorByTexToColorMap(texToColorMap);
+  }
+
+  /// [strings] is a list of tuples containing both the tex
+  /// string and the substrings to isolate
+  static Future preload(List<Tuple2<String, List<String>>> strings,
+      {String separator = ' '}) async {
+    var texStringsToLoad = <String>[];
+    for (var s in strings) {
+      var texStrings = breakUpTexStrings(s.item1, s.item2, {});
+      var fullString = texStrings.join(separator);
+      texStringsToLoad.addAll([fullString, ...texStrings]);
+    }
+
+    await SingleStringMathTex.preload(texStringsToLoad);
   }
 
   MathTex.copyFrom(MathTex mob)
@@ -180,7 +217,8 @@ abstract class MathTex extends SingleStringMathTex {
         texToColorMap = mob.texToColorMap,
         super.copyFrom(mob);
 
-  List<String> breakUpTexStrings(String texString) {
+  static List<String> breakUpTexStrings(String texString,
+      List<String> subStringToIsolate, Map<String, Color> texToColorMap) {
     var texStrings = texString.splitWithContent(RegExp('{{(.*?)}}'));
     var patterns = [
       for (var ss in [...texToColorMap.keys, ...subStringToIsolate])
@@ -205,14 +243,12 @@ abstract class MathTex extends SingleStringMathTex {
     ];
   }
 
-  SingleStringMathTex getSingleStringMathTex(String texString);
-
   void breakUpBySubstrings() {
     var newSubMobjects = <SingleStringMathTex>[];
     var currentIndex = 0;
 
     for (var texString in texStrings) {
-      var subTexMob = getSingleStringMathTex(texString);
+      var subTexMob = SingleStringMathTex(texString);
       var numSubmobs = subTexMob.submobjects.length;
       var newIndex =
           currentIndex + numSubmobs + argSeparator.split(' ').join('').length;

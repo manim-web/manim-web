@@ -35,7 +35,7 @@ abstract class Scene {
   Future run() async {
     display.bindEventListeners();
 
-    setup();
+    await setup();
     try {
       await construct();
     } on EndSceneEarlyException {
@@ -43,7 +43,7 @@ abstract class Scene {
     }
     resetCamera();
     render();
-    tearDown();
+    await tearDown();
 
     display.unbindEventListeners();
   }
@@ -55,9 +55,9 @@ abstract class Scene {
     return Camera(display: display);
   }
 
-  void setup() {}
-  Future construct(); //* To be implemented in subclasses
-  void tearDown() {}
+  FutureOr<void> setup() {}
+  FutureOr<void> construct(); //* To be implemented in subclasses
+  FutureOr<void> tearDown() {}
 
   void resetCamera() => camera.reset();
   void render() => camera.render(mobjects);

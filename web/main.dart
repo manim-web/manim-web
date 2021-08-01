@@ -13,6 +13,11 @@ class TestScene extends Scene {
       Canvas2DDisplay(document.querySelector('.canvas-container')!);
 
   @override
+  Future setup() async {
+    // Preload tex here
+  }
+
+  @override
   Future construct() async {
     // Your animations here
   }
