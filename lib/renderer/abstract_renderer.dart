@@ -32,6 +32,4 @@ abstract class AbstractRenderer {
 
   void renderVMobject(VMobject mob);
   void renderVMobjects(List<VMobject> mobs);
-
-  Future<double> nextFrame();
 }

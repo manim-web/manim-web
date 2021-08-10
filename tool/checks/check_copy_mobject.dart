@@ -32,9 +32,8 @@ bool checkCopyMobject() {
   for (var classMirror in mobjectClasses) {
     var hasCopyDeclared = classMirror.declarations.containsKey(Symbol('copy'));
 
-    // classMirror.simpleName.toString() returns something like `Symbol("{className}")`
-    var symbol = classMirror.simpleName.toString();
-    var className = symbol.substring(8, symbol.length - 2);
+    var symbol = classMirror.simpleName;
+    var className = MirrorSystem.getName(symbol);
 
     var loc = classMirror.location!;
     var file = loc.sourceUri.path.replaceFirst('manim_web/', 'lib/');

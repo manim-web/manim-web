@@ -17,3 +17,7 @@ doc/api/
 
 # Mac
 .DS_Store
+
+# Manim web compilation data
+web/
+temp/

@@ -1,3 +1,8 @@
+## 1.2.0
+
+- Added new CLI
+- Updated the examples
+
 ## 1.1.1
 
 - Removed MathJax to simplify multi-rendering support

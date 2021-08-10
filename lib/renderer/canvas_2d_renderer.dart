@@ -18,19 +18,6 @@ class Canvas2DRenderer extends AbstractRenderer {
   double time = 0;
 
   @override
-  Future<double> nextFrame() async {
-    var nextT = await window.animationFrame.then((t) => t.toDouble());
-
-    if (time == 0) {
-      time = nextT;
-    }
-
-    var dt = nextT - time;
-    time += dt;
-    return dt / 1000;
-  }
-
-  @override
   void setup(AbstractDisplay display) {
     super.setup(display);
     ctx = (display as Canvas2DDisplay).canvas.context2D;
