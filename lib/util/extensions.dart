@@ -36,3 +36,35 @@ extension StringUtils on String {
     return result;
   }
 }
+
+extension FutureUtils<T> on Future<T> {
+  T awaitSync({void Function()? whileWaiting}) {
+    whileWaiting ??= () {};
+
+    var done = true;
+    T? value;
+
+    then((_value) {
+      done = true;
+      value = _value;
+    });
+
+    while (!done) {}
+
+    return value!;
+  }
+}
+
+extension ListUtils<T> on List<T> {
+  List<T> get uniqueValues {
+    var uniques = <T>[];
+
+    for (var val in this) {
+      if (!uniques.contains(val)) {
+        uniques.add(val);
+      }
+    }
+
+    return uniques;
+  }
+}

@@ -6,13 +6,13 @@ Manim animation engine, for the web.
 
 ## Getting started
 
-You need to have the `Dart SDK` installed on your computer (with version between 2.13.0 included and 3.0.0 excluded).
+You need to have the `Dart SDK` installed on your computer (with version between 2.13.0 included and 3.0.0 excluded) and $\LaTeX$.
 
 You will also have to activate `webdev` with `dart pub global activate webdev`.
 
 Then you will need to get all of the dependencies: `dart pub get`.
 
-Finally, you can run the dev server with `webdev serve {folder}` to serve a folder (by default the folder is `web`)
+Finally, you can run the dev server with `dart bin/manim.dart --file {dart animation file} --html {html file}`.
 
 ## Examples
 

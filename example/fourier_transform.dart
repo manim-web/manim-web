@@ -1,20 +1,8 @@
-import 'dart:html';
-
-import 'package:manim_web/display/canvas_2d_display.dart';
-import 'package:manim_web/mobject/svg/web_tex_mobject.dart';
 import 'package:manim_web/manim.dart';
 
-const resolution = 1;
-
-void main() {
-  runScene(FourierScene());
-}
+const resolution = 3;
 
 class FourierScene extends Scene {
-  @override
-  AbstractDisplay createDisplay() =>
-      Canvas2DDisplay(document.querySelector('.canvas-container')!);
-
   late Axes timeAxes;
   late Axes frequencyAxes;
   late NumberPlane circlePlane;
@@ -30,6 +18,14 @@ class FourierScene extends Scene {
   double windingFrequency = 0;
 
   @override
+  FutureOr<void> preload() {
+    // Tex.preload(r'cycles / second');
+    // Number.preload();
+    MathTex.preload(r'\hat{g}(f) = \int^{+\infty}_{-\infty} g(t)'
+        r' e^{-2 \pi ift} dt');
+  }
+
+  @override
   Future construct() async {
     await addWaveWithAxes();
     windingFrequency = 5;
@@ -40,21 +36,21 @@ class FourierScene extends Scene {
     fourierGraph = getFourierGraph(wave);
 
     await addDots();
-    await addText();
+    // await addText();
     await showFourierGraphCreation();
+    await addFormula();
 
     makeInteractive();
 
     await continueRendering();
   }
 
-  @override
-  void setup() {
-    // preload all digits
-    for (var i in range(end: 9)) {
-      SingleStringMathTex(i.toString());
-    }
-    SingleStringMathTex('.');
+  Future addFormula() async {
+    var tex = MathTex(r'\hat{g}(f) = \int^{+\infty}_{-\infty} g(t)'
+        r' e^{-2 \pi ift} dt')
+      ..toCorner(corner: UR)
+      ..scaleUniformly(1.2);
+    await play(ShowCreation(tex));
   }
 
   Future addAllAxes() async {
@@ -83,28 +79,28 @@ class FourierScene extends Scene {
   Mobject fourierDotCreationUpdater(Mobject dot, double dt) =>
       dot..moveToPoint(partialFourierGraph.getStart());
 
-  Future addText() async {
-    var windingFreqTex = Number(windingFrequency)..setColor(color: LIGHT_GRAY);
+  // TODO Fix this
+  // Future addText() async {
+  //   var windingFreqTex = Number(windingFrequency)..setColor(color: LIGHT_GRAY);
 
-    var windingUnits = MathTex(r'\text{cycles} / \text{second}')
-      ..setColor(color: LIGHT_GRAY);
+  //   var windingUnits = Tex('cycles / second')..setColor(color: LIGHT_GRAY);
 
-    VGroup([windingFreqTex, windingUnits])
-      ..scaleUniformly(0.8)
-      ..arrange(buffer: SMALL_BUFFER)
-      ..nextToMobject(circlePlane, direction: UP);
+  //   VGroup([windingFreqTex, windingUnits])
+  //     ..scaleUniformly(0.8)
+  //     ..arrange(buffer: SMALL_BUFFER)
+  //     ..nextToMobject(circlePlane, direction: UP);
 
-    await playMany([FadeIn(windingFreqTex), FadeIn(windingUnits)]);
+  //   await playMany([FadeIn(windingFreqTex), FadeIn(windingUnits)]);
 
-    windingFreqTex.addUpdater((mob, dt) {
-      windingFreqTex
-        ..changeValue(windingFrequency)
-        ..scaleUniformly(0.8)
-        ..setColor(color: LIGHT_GRAY);
+  //   windingFreqTex.addUpdater((mob, dt) {
+  //     windingFreqTex
+  //       ..changeValue(windingFrequency)
+  //       ..scaleUniformly(0.8)
+  //       ..setColor(color: LIGHT_GRAY);
 
-      return mob;
-    });
-  }
+  //     return mob;
+  //   });
+  // }
 
   Future showFourierGraphCreation() async {
     addToFront([fourierDot, partialFourierGraph]);
@@ -340,48 +336,61 @@ class FourierScene extends Scene {
   }
 }
 
-class Number extends VGroup {
-  late SingleStringMathTex a;
-  late SingleStringMathTex b;
-  late SingleStringMathTex c;
-  late SingleStringMathTex dot;
-  late VectorizedPoint pt;
+// class Number extends VGroup {
+//   late SingleStringMathTex a;
+//   late SingleStringMathTex b;
+//   late SingleStringMathTex c;
+//   late SingleStringMathTex dot;
+//   late VectorizedPoint pt;
 
-  late List<SingleStringMathTex> digits;
+//   late List<SingleStringMathTex> digits;
 
-  Number(double val) {
-    if (val > 10) {
-      val = 9.99;
-    } else if (val < 0) {
-      val = 0;
-    }
+//   Number(double val) {
+//     if (val > 10) {
+//       val = 9.99;
+//     } else if (val < 0) {
+//       val = 0;
+//     }
 
-    var str = val.toStringAsFixed(2);
-    dot = SingleStringMathTex('.');
-    a = SingleStringMathTex(str[0]);
-    b = SingleStringMathTex(str[2]);
-    c = SingleStringMathTex(str[3]);
-    pt = VectorizedPoint();
-    add([a, b, c, dot, pt]);
-    digits = [a, dot, b, c];
+//     var str = val.toStringAsFixed(2);
+//     dot = SingleStringMathTex('.');
+//     a = SingleStringMathTex(str[0]);
+//     b = SingleStringMathTex(str[2]);
+//     c = SingleStringMathTex(str[3]);
+//     pt = VectorizedPoint();
+//     add([a, b, c, dot, pt]);
+//     digits = [a, dot, b, c];
 
-    positionDigits();
-  }
+//     positionDigits();
+//   }
 
-  void changeValue(double val) {
-    var str = val.toStringAsFixed(2);
+//   void changeValue(double val) {
+//     var str = val.toStringAsFixed(2);
 
-    a.become(SingleStringMathTex(str[0]));
-    b.become(SingleStringMathTex(str[2]));
-    c.become(SingleStringMathTex(str[3]));
+//     var _a = SingleStringMathTex(str[0]);
+//     _a.shift(a.getPos());
+//     a.become(_a);
 
-    positionDigits();
-  }
+//     var _b = SingleStringMathTex(str[2]);
+//     _b.shift(b.getPos());
+//     b.become(_b);
 
-  void positionDigits() {
-    VGroup(digits)
-      ..arrange(buffer: SMALL_BUFFER)
-      ..shift(pt.getPos());
-    dot.shift(DOWN * getHeight() * 0.4);
-  }
-}
+//     var _c = SingleStringMathTex(str[3]);
+//     _c.shift(c.getPos());
+//     c.become(_c);
+//   }
+
+//   void positionDigits() {
+//     VGroup(digits)
+//       ..arrange(buffer: SMALL_BUFFER)
+//       ..shift(pt.getPos());
+//     dot.shift(DOWN * getHeight() * 0.4);
+//   }
+
+//   static void preload() {
+//     for (var i in range(end: 10)) {
+//       SingleStringMathTex.preload(i.toString());
+//     }
+//     SingleStringMathTex.preload('.');
+//   }
+// }

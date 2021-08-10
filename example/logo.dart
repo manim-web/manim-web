@@ -1,18 +1,6 @@
-import 'dart:html';
-
-import 'package:manim_web/display/canvas_2d_display.dart';
 import 'package:manim_web/manim.dart';
-import 'package:manim_web/mobject/svg/web_tex_mobject.dart';
-
-void main() {
-  runScene(LogoScene());
-}
 
 class LogoScene extends Scene {
-  @override
-  AbstractDisplay createDisplay() =>
-      Canvas2DDisplay(document.querySelector('.canvas-container')!);
-
   late Axes axes;
   late ParametricFunction graph;
   late Line tangentLine;
@@ -21,6 +9,20 @@ class LogoScene extends Scene {
 
   var a = 1.5;
   var b = 3.5;
+
+  @override
+  FutureOr<void> preload() {
+    MathTex.preload('x');
+    MathTex.preload('y');
+    MathTex.preload('a');
+    MathTex.preload('b');
+    MathTex.preload('f(a)');
+    MathTex.preload('f(b)');
+    Tex.preload('Manim');
+    Tex.preload('web');
+    Tex.preload('Mathematical Animation Engine');
+    Tex.preload('for the web');
+  }
 
   @override
   Future construct() async {
@@ -38,8 +40,6 @@ class LogoScene extends Scene {
     // Group(mobjects).scaleUniformly(0.8); // scale everything
     // mobjects.whereType<VMobject>().forEach(
     //     (vmob) => vmob.strokeWidth *= 0.8); // scale vmobjects (strokeWidth)
-
-    await continueRendering();
   }
 
   void createGraph() {
@@ -183,17 +183,17 @@ class LogoScene extends Scene {
   }
 
   void addText() {
-    var manim = MathTex(r'\text{Manim}')
-      ..scaleUniformly(4)
+    var manim = Tex('Manim')
+      ..scaleUniformly(5.5)
       ..shift(RIGHT * 2.8 + DOWN / 2);
-    var web = MathTex(r'\text{web}')
-      ..scaleUniformly(2)
+    var web = Tex('web')
+      ..scaleUniformly(2.8)
       ..shift(RIGHT * 6.2 + DOWN * 1.3);
-    var subtitle = MathTex(r'\text{Mathematical Animation Engine}')
-      ..scaleUniformly(2)
+    var subtitle = Tex('Mathematical Animation Engine')
+      ..scaleUniformly(2.5)
       ..toEdge(edge: DOWN, buffer: MED_LARGE_BUFFER);
-    var subtitle2 = MathTex(r'\text{for the web}')
-      ..scaleUniformly(1.5)
+    var subtitle2 = Tex('for the web')
+      ..scaleUniformly(1.8)
       ..toEdge(edge: DOWN, buffer: SMALL_BUFFER);
 
     add([manim, web, subtitle, subtitle2]);

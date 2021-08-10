@@ -9,7 +9,7 @@ import 'package:manim_web/util/array.dart';
 import 'package:manim_web/util/color.dart';
 import 'package:manim_web/util/math_functions.dart';
 import 'package:manim_web/util/space_ops.dart';
-import 'package:manim_web/util/string.dart';
+import 'package:manim_web/util/extensions.dart';
 import 'package:manim_web/util/vector.dart';
 import 'package:tuple/tuple.dart';
 
@@ -123,7 +123,21 @@ class SVGMobject extends VMobject {
   }
 
   List<VMobject> useToMobjects(Element useElement, SVGElementStyle style) {
-    var ref = useElement.attributes['xlink:href'];
+    //! I don't know why it doesn't work
+    // var ref = useElement.attributes['xlink:href'];
+
+    // Temporary fix
+    var attributes = useElement.attributes;
+    var keys = attributes.keys.toList();
+    var values = attributes.values.toList();
+
+    var k = keys.indexWhere((element) =>
+        element.toString().contains('href') &&
+        element.toString().contains('xlink'));
+
+    var ref = k >= 0 ? values[k] : null;
+    // End of fix
+
     ref = withoutFirst(ref?.split('#') ?? []).join('');
 
     if (!refToElement.containsKey(ref)) {

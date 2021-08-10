@@ -1,12 +1,4 @@
-import 'dart:html';
-
-import 'package:manim_web/display/canvas_2d_display.dart';
 import 'package:manim_web/manim.dart';
-import 'package:manim_web/mobject/svg/web_tex_mobject.dart';
-
-void main() {
-  runScene(MatrixTransformationScene());
-}
 
 class MatrixTransformationScene extends Scene {
   late Array transformationMatrix;
@@ -24,6 +16,12 @@ class MatrixTransformationScene extends Scene {
   late MathTex texMatrix;
 
   double planeScale = 1.5;
+
+  @override
+  FutureOr<void> preload() {
+    MathTex.preload(r'\hat{\imath}');
+    MathTex.preload(r'\hat{\jmath}');
+  }
 
   @override
   Future construct() async {
@@ -176,10 +174,6 @@ class MatrixTransformationScene extends Scene {
     i.addUpdater(planeUpdater);
     j.addUpdater(planeUpdater);
   }
-
-  @override
-  AbstractDisplay createDisplay() =>
-      Canvas2DDisplay(document.querySelector('.canvas-container')!);
 }
 
 Vector3 listToVector(List<double> l) =>

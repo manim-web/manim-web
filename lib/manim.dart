@@ -27,12 +27,15 @@ export 'package:manim_web/mobject/types/interactive_mobject.dart';
 
 // ./mobject/svg/
 export 'package:manim_web/mobject/svg/svg_mobject.dart';
+export 'package:manim_web/mobject/svg/tex_mobject.dart';
 
 // ./display/
 export 'package:manim_web/display/abstract_display.dart';
+export 'package:manim_web/display/empty_display.dart';
 
 // ./renderer/
 export 'package:manim_web/renderer/abstract_renderer.dart';
+export 'package:manim_web/renderer/empty_renderer.dart';
 
 // ./scene/
 export 'package:manim_web/scene/scene.dart';

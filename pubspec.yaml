@@ -8,7 +8,9 @@ environment:
 dependencies:
   collection: ^1.15.0
   html: ^0.15.0
+  http: ^0.13.3
   js: ^0.6.3
+  process_run: ^0.12.1+1
   tuple: ^2.0.0
 
 dev_dependencies:

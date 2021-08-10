@@ -1,12 +1,4 @@
-import 'dart:html';
-
-import 'package:manim_web/display/canvas_2d_display.dart';
 import 'package:manim_web/manim.dart';
-import 'package:manim_web/mobject/svg/web_tex_mobject.dart';
-
-void main() {
-  runScene(ComplexExponentialScene());
-}
 
 class ComplexExponentialScene extends Scene {
   int arrowCount = 16;
@@ -24,6 +16,11 @@ class ComplexExponentialScene extends Scene {
   late MathTex formula;
 
   late EventListener positionListener;
+
+  @override
+  FutureOr<void> preload() {
+    MathTex.preload(r'e^{i\theta}');
+  }
 
   @override
   void setup() {
@@ -176,8 +173,4 @@ class ComplexExponentialScene extends Scene {
       rotatingArrow.removeUpdater(rotateTowardsCursor);
     }
   }
-
-  @override
-  AbstractDisplay createDisplay() =>
-      Canvas2DDisplay(document.querySelector('.canvas-container')!);
 }

@@ -15,12 +15,14 @@ class Camera {
   double frameHeight = FRAME_HEIGHT;
   Vector3 frameCenter = ORIGIN;
   Color backgroundColor;
-  AbstractDisplay display;
+  late AbstractDisplay display;
 
   Camera({
-    required this.display,
     this.backgroundColor = BLACK,
-  }) {
+  });
+
+  void bindDisplay(AbstractDisplay _display) {
+    display = _display;
     display.bindCamera(this);
     display.setup();
     resizeFrameShape();

@@ -25,17 +25,22 @@ abstract class Scene {
   late AbstractDisplay display;
 
   Scene() {
-    display = createDisplay();
-    renderer = display.renderer;
     camera = createCamera();
     random = Random(randomSeed);
     mobjects = [];
   }
 
+  void bindDisplay(AbstractDisplay _display) {
+    display = _display;
+    renderer = display.renderer;
+    display.bindCamera(camera);
+    camera.bindDisplay(display);
+  }
+
   Future run() async {
     display.bindEventListeners();
 
-    setup();
+    await setup();
     try {
       await construct();
     } on EndSceneEarlyException {
@@ -43,21 +48,20 @@ abstract class Scene {
     }
     resetCamera();
     render();
-    tearDown();
+    await tearDown();
 
     display.unbindEventListeners();
   }
 
-  AbstractDisplay createDisplay(); //* To be implemented in subclasses
-
   //* Can be overwritten in subclasses
   Camera createCamera() {
-    return Camera(display: display);
+    return Camera();
   }
 
-  void setup() {}
-  Future construct(); //* To be implemented in subclasses
-  void tearDown() {}
+  FutureOr<void> preload() {}
+  FutureOr<void> setup() {}
+  FutureOr<void> construct(); //* To be implemented in subclasses
+  FutureOr<void> tearDown() {}
 
   void resetCamera() => camera.reset();
   void render() => camera.render(mobjects);
@@ -201,7 +205,7 @@ abstract class Scene {
     var t = 0.0;
 
     while (t < animation.runTime) {
-      var dt = await renderer.nextFrame();
+      var dt = await display.nextFrame();
       t += dt;
 
       var alpha = t / animation.runTime;
@@ -233,7 +237,7 @@ abstract class Scene {
     var t = 0.0;
 
     while (t < duration) {
-      var dt = await renderer.nextFrame();
+      var dt = await display.nextFrame();
       t += dt;
 
       updateMobjects(dt);
@@ -272,7 +276,7 @@ abstract class Scene {
       addEventListener(listener);
 
       while (!completed) {
-        var dt = await renderer.nextFrame();
+        var dt = await display.nextFrame();
         updateMobjects(dt);
         updateFrame(dt);
       }
