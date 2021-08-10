@@ -17,3 +17,8 @@ class PrecompiledTest extends Scene {
     // Run time animation
   }
 }
+
+// the constant bellow should be defined in manim.
+// this is used until precompiled animations are implemented
+const precompiled = 3;
+const runtime = 3;

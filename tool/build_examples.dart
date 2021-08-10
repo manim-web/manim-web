@@ -14,10 +14,10 @@ void main() async {
   var examples = await getHTMLExamples(mainDir);
   var shell = Shell(workingDirectory: mainDir.path);
 
-  // await shell.run([
-  //   for (var d in examples)
-  //     'dart bin/manim.dart build -f ${d.item1.path} -h ${d.item2.path} --no-webdev'
-  // ].join('\n'));
+  await shell.run([
+    for (var d in examples)
+      'dart bin/manim.dart build -f ${d.item1.path} -h ${d.item2.path} --no-webdev'
+  ].join('\n'));
 
   await shell.run('webdev build -o web:build');
 }
