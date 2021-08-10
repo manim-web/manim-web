@@ -48,6 +48,9 @@ class SingleStringMathTex extends SVGMobject {
     this.color = color;
   }
 
+  @override
+  SingleStringMathTex copy() => SingleStringMathTex.copyFrom(this);
+
   static void preload(String texString, [String environment = 'align*']) {
     texString = getModifiedExpression(texString);
 
