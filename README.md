@@ -2,22 +2,16 @@
 
 Manim animation engine, for the web.
 
-[Changelog](CHANGELOG.md) | [Manim](https://github.com/3b1b/manim) | [Suggestions / Improvements](IMPROVEMENTS.md) | [FAQ](FAQ.md) | [Discord Server](https://discord.gg/2vRqjpk247)
+[Changelog](CHANGELOG.md) | [Manim](https://github.com/3b1b/manim) | [Suggestions / Improvements](IMPROVEMENTS.md) | [FAQ](FAQ.md) | [Discord Server](https://discord.gg/2vRqjpk247) | [Website](https://manim-web.hugos29.dev/)
 
 ## Getting started
 
-You need to have the `Dart SDK` installed on your computer (with version between 2.13.0 included and 3.0.0 excluded) and $\LaTeX$.
-
-You will also have to activate `webdev` with `dart pub global activate webdev`.
-
-Then you will need to get all of the dependencies: `dart pub get`.
-
-Finally, you can run the dev server with `dart bin/manim.dart --file {dart animation file} --html {html file}`.
+Look at the [**Getting Started** section of the website](https://manim-web.hugos29.dev/).
 
 ## Examples
 
-You can find examples of animations built with Manim-Web [here](https://manim-web.github.io/manim-web/).
-The code is available in this repository, in the `example` folder.
+You can find a list of examples of animations built with Manim-Web [here](https://manim-web.hugos29.dev/examples).
+Some of them are interactive.
 
 ## Contributing
 

@@ -7,6 +7,9 @@ import 'package:process_run/shell.dart';
 import 'utils/directories.dart';
 import 'utils/get_lib_dir.dart';
 
+// TODO Refactor to work with the new documentation
+// TODO Add dartdoc style to documentation
+
 void main() async {
   var lib = await getLibDirectory();
   var mainDir = lib.parent;

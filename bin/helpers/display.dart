@@ -3,12 +3,25 @@ import 'console.dart';
 
 extension DisplayArgParser on ArgParser {
   void addDisplayOptions() {
-    addFlag('use-gl', aliases: ['gl']);
-    addOption('html', abbr: 'h');
+    addFlag(
+      'gl',
+      help: 'Use WebGL / OpenGL (depending on the target)',
+      defaultsTo: false,
+    );
+    addOption(
+      'html',
+      abbr: 'w',
+      aliases: ['web'],
+      help: 'HTML file used to compile the animation. '
+          'If not provided, the scene will use the corresponding non-web '
+          'renderer (Cairo / OpenGL)',
+    );
     addOption(
       'canvas-container-id',
       aliases: ['canvas-container', 'container-id'],
       abbr: 'c',
+      defaultsTo: 'canvas-container',
+      help: 'ID of the parent element of the canvas',
     );
   }
 }
@@ -39,17 +52,16 @@ class Display {
     var html = args.getNullableOption('html') != null;
 
     if (!gl && html) {
-      var id = args.getNullableOption('canvas') ?? 'canvas-container';
+      var id = args.getOption('canvas');
       return Display(
-          type: DisplayType.WEB2D,
-          imports: '''
+        type: DisplayType.WEB2D,
+        imports: '''
           import 'dart:html';
           import 'package:manim_web/display/canvas_2d_display.dart';
         ''',
-          creationCode: 'Canvas2DDisplay(document.getElementById(\'$id\')!)');
+        creationCode: 'Canvas2DDisplay(document.getElementById(\'$id\')!)',
+      );
     } else {
-      print(gl);
-      print(html);
       throw 'not implemented yet';
     }
   }

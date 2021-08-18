@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:args/args.dart';
 import 'package:process_run/shell.dart';
 
 import '../helpers/build_process.dart';
@@ -8,8 +7,6 @@ import '../helpers/console.dart';
 import '../helpers/display.dart';
 
 class BuildProcess extends AbstractBuildProcess {
-  BuildProcess(ArgResults args) : super(args);
-
   @override
   Future run() async {
     await prepare();
@@ -25,7 +22,7 @@ class BuildProcess extends AbstractBuildProcess {
       tex: injectTex,
     );
 
-    if (!args.getFlag('no-webdev')) {
+    if (getFlag('webdev')) {
       await compile();
     }
   }
@@ -35,8 +32,25 @@ class BuildProcess extends AbstractBuildProcess {
     await shell.run('webdev build -o web:build');
   }
 
-  static ArgParser parser = ArgParser()
-    ..addOption('file', abbr: 'f')
-    ..addFlag('no-webdev')
-    ..addDisplayOptions();
+  @override
+  void addOptions() {
+    argParser
+      ..addOption(
+        'file',
+        abbr: 'f',
+        help: 'Dart file containing the scene',
+      )
+      ..addFlag(
+        'webdev',
+        defaultsTo: true,
+        help: 'Use webdev to build',
+      )
+      ..addDisplayOptions();
+  }
+
+  @override
+  String description = 'Build a Manim Web project';
+
+  @override
+  String name = 'build';
 }

@@ -1,3 +1,15 @@
+## 1.2.2
+
+- Changed CONTRIBUTING.md
+- Changed the CLI to be friendlier
+- Added CLI init command
+- Changed CLI name
+
+## 1.2.1
+
+- Published manim-web package to pub.dev
+- Changed pubspec.yaml
+
 ## 1.2.0
 
 - Added new CLI

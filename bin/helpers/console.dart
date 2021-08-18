@@ -38,7 +38,7 @@ extension BetterArgResults on ArgResults {
     }
   }
 
-  String getOption(String opt) => command![opt] as String;
+  String getOption(String opt) => this[opt] as String;
 
-  bool getFlag(String opt) => command![opt] as bool;
+  bool getFlag(String opt) => this[opt] as bool;
 }

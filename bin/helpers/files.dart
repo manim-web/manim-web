@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:path/path.dart';
@@ -11,11 +12,27 @@ bool hasMainDeclared(String fileContent) {
   return mainFuncRegex.hasMatch(fileContent);
 }
 
-Stream watchFile(File file) {
-  var parent = file.parent;
+extension BetterFile on File {
+  Stream<void> watch() {
+    return parent
+        .watch()
+        .where((event) => absolute(event.path) == absolute(path))
+        .map((event) => null);
+  }
+}
 
-  return parent
-      .watch()
-      .where((event) => absolute(event.path) == absolute(file.path))
-      .map((event) => null);
+extension BetterDir on Directory {
+  Future<List<FileSystemEntity>> content({bool recursive = false}) {
+    var files = <FileSystemEntity>[];
+    var completer = Completer<List<FileSystemEntity>>();
+    var lister = list(recursive: recursive);
+
+    lister.listen(
+      (file) => files.add(file),
+      onDone: () => completer.complete(files),
+      onError: (error) => completer.completeError(error),
+    );
+
+    return completer.future;
+  }
 }

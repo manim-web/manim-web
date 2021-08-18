@@ -1,27 +1,17 @@
-import 'package:args/args.dart';
+import 'package:args/command_runner.dart';
 
 import 'commands/build.dart';
 import 'commands/dev.dart';
-import 'helpers/help.dart';
+import 'commands/init.dart';
+import 'helpers/console.dart';
 
-void main(List<String> arguments) async {
-  var parser = ArgParser()
-    ..addCommand('build', BuildProcess.parser)
-    ..addCommand('dev', DevProcess.parser);
-  var args = parser.parse(arguments);
-
-  switch (args.command?.name) {
-    case 'build':
-      return BuildProcess(args).run();
-
-    case 'dev':
-      return DevProcess(args).run();
-
-    case null:
-      return printHelp();
-
-    default:
-      print('Unknown command ${args.command?.name}');
-      return printHelp();
-  }
+void main(List<String> arguments) {
+  CommandRunner('manim', 'Manim Animation Engine for the web')
+    ..addCommand(BuildProcess())
+    ..addCommand(DevProcess())
+    ..addCommand(InitCommand())
+    ..run(arguments).catchError((error) {
+      printPartial('Error: ');
+      print(error);
+    });
 }
