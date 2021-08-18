@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:args/args.dart';
+import 'package:path/path.dart';
 import 'package:process_run/shell.dart';
 
 import '../helpers/build_process.dart';
@@ -9,9 +10,8 @@ import '../helpers/display.dart';
 import '../helpers/files.dart';
 
 class DevProcess extends AbstractBuildProcess {
-  DevProcess(ArgResults args) : super(args);
-
   Future? webdev;
+  int? port;
 
   @override
   Future run() async {
@@ -28,17 +28,18 @@ class DevProcess extends AbstractBuildProcess {
       }
     });
 
-    watchFile(file).listen((e) => listener());
+    file.watch().listen((e) => listener());
 
     listener();
 
     if (display.isWeb) {
-      var port = args.getNullableOption('port') ?? '8080';
+      var port = getOption('port');
       if (int.tryParse(port) == null) {
         port = '8080';
-        print('The port must be a number, not $port');
+        print('The port must be a number, not "$port"');
       }
       webdev = Shell(verbose: false).run('webdev serve web:$port');
+      this.port = int.parse(port);
     }
   }
 
@@ -73,13 +74,41 @@ class DevProcess extends AbstractBuildProcess {
       tex: injectTex,
     );
 
+    if (display.isWeb) {
+      var htmlFilePath = basename(File(getOption('html')).path);
+      print('Animation running on http://localhost:$port/$htmlFilePath');
+    }
+
     if (needRebuild) {
       await rebuild();
     }
   }
 
-  static ArgParser parser = ArgParser()
-    ..addOption('file', abbr: 'f')
-    ..addOption('port', abbr: 'p')
-    ..addDisplayOptions();
+  @override
+  void addOptions() {
+    argParser
+      ..addOption(
+        'file',
+        abbr: 'f',
+        help: 'Dart file containing the scene',
+      )
+      ..addOption(
+        'port',
+        abbr: 'p',
+        help: 'port used by the server',
+        defaultsTo: '8080',
+      )
+      ..addFlag(
+        'webdev',
+        defaultsTo: true,
+        help: 'Use webdev to build. If set to false, the server will not start',
+      )
+      ..addDisplayOptions();
+  }
+
+  @override
+  String description = 'Start the Dev Server for a Manim Web project';
+
+  @override
+  String name = 'dev';
 }

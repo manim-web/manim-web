@@ -11,7 +11,7 @@ Before you start contributing, there are a few things to know :
 
 - Please write easy to understand code. If you can't, try to explain it with comments.
 - If some changes need to be done in subclasses, explain how and why.
-  _For example, the copy method for mobject needs to be reimplemented for every subclass; otherwise, some properties may not be copied and Dart may not be ok with that._
+  _For example, the copy method for mobject needs to be implemented for every subclass; otherwise, some properties may not be copied and Dart may not be ok with that._
 
 ## Checks
 
@@ -19,7 +19,4 @@ Before you start contributing, there are a few things to know :
 - Format your code with `dart format {file}` for every file you changed or `dart run tool/format_all.dart`
 - Run the custom checks with `dart run tool/checks/run_all_checks.dart`
 - If you changed the examples :
-  * if you haven't already, activate `peanut` with `dart pub global activate peanut`
-  * after creating a commit :
-  * build the example to the `gh-pages` branch with `peanut`
-  * then push both `gh-pages` and your current branch
+  - please run `dart tool/build_examples.dart`

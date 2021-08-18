@@ -1,6 +1,10 @@
 name: manim_web
 description: Manim animation engine, for the web.
-version: 1.0.0
+version: 1.2.2
+homepage: https://manim-web.github.io/
+repository: https://github.com/manim-web/manim-web/
+issue_tracker: https://github.com/manim-web/manim-web/issues
+documentation: https://manim-web.github.io/
 
 environment:
   sdk: ">=2.13.0 <3.0.0"
@@ -8,15 +12,18 @@ environment:
 dependencies:
   collection: ^1.15.0
   html: ^0.15.0
-  http: ^0.13.3
-  js: ^0.6.3
   process_run: ^0.12.1+1
+  path: ^1.8.0
   tuple: ^2.0.0
+  args: ^2.2.0
+  git: ^2.0.0
 
 dev_dependencies:
   build_runner: ^1.10.0
   build_web_compilers: ^2.11.0
   colorize: ^3.0.0
-  path: ^1.8.0
   pedantic: ^1.9.0
   progress_bar: ^1.0.0
+
+executables:
+  manimweb:

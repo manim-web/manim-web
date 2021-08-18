@@ -5,14 +5,13 @@ import 'package:args/args.dart';
 import 'package:path/path.dart';
 import 'package:process_run/shell.dart';
 
+import 'command.dart';
 import 'console.dart';
 import 'display.dart';
 import 'files.dart';
 import 'tex.dart';
 
-abstract class AbstractBuildProcess {
-  ArgResults args;
-
+abstract class AbstractBuildProcess extends Command {
   late File file;
   late Shell shell;
   late File tempFile;
@@ -23,14 +22,13 @@ abstract class AbstractBuildProcess {
   late String fileContent;
   late Display display;
 
-  AbstractBuildProcess(this.args);
-
   Future prepare() async {
-    if (args.command!['file'] == null) {
+    var fileName = getNullableOption('file');
+    if (fileName == null) {
       throw 'Please add a file';
     }
 
-    file = File(args.command!['file']);
+    file = File(fileName);
 
     tempDir = await Directory(
       Directory.current.path + separator + 'temp',
@@ -181,8 +179,6 @@ abstract class AbstractBuildProcess {
     return scenes[selection - 1];
   }
 
-  Future run();
-
   Future<List<String>> getScenes() async {
     var tempFileContent = '''
       import 'dart:convert';
@@ -233,7 +229,7 @@ abstract class AbstractBuildProcess {
   }
 
   Display getDisplay() {
-    return Display.fromArgs(args);
+    return Display.fromArgs(argResults!);
   }
 
   Future injectData({
@@ -256,7 +252,7 @@ abstract class AbstractBuildProcess {
     await finalFile.writeAsString(finalCode);
 
     if (display.isWeb) {
-      var htmlFile = args.getOption('html');
+      var htmlFile = getOption('html');
       var finalHTMLFile = File(finalDir.path + separator + basename(htmlFile));
       await finalHTMLFile.create();
       await finalHTMLFile.writeAsString(await File(htmlFile).readAsString());
