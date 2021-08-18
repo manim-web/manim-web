@@ -1,3 +1,5 @@
+library mobjects.mobject;
+
 import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:tuple/tuple.dart';

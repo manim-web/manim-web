@@ -71,7 +71,7 @@ class ComplexExponentialScene extends Scene {
   }
 
   void setInteractiveAngle(MouseEvent event) {
-    var coords = plane.pointToCoords(event.mousePos * Vector3(1, -1, 1));
+    var coords = plane.pointToCoords(event.mousePos);
     var angle = coords.angle();
 
     interactiveArrowAngle = angle;
@@ -111,7 +111,7 @@ class ComplexExponentialScene extends Scene {
       for (var arrow in rotatedArrows)
         Transform(arrow,
             target: arrow.copy()
-              ..rotate(90 * DEGREES, aboutPoint: arrow.getStart()))
+              ..rotate(-90 * DEGREES, aboutPoint: arrow.getStart()))
     ]);
   }
 
@@ -135,7 +135,8 @@ class ComplexExponentialScene extends Scene {
           ..shift(rotatedRotatingArrow.getEnd())));
     await play(Transform(rotatedRotatingArrow,
         target: rotatedRotatingArrow.copy()
-          ..rotate(90 * DEGREES, aboutPoint: rotatedRotatingArrow.getStart())));
+          ..rotate(-90 * DEGREES,
+              aboutPoint: rotatedRotatingArrow.getStart())));
 
     rotatingArrow.addUpdater(autoRotateUpdater);
     rotatedRotatingArrow.addUpdater(autoRotateRotatedUpdater);
@@ -143,7 +144,7 @@ class ComplexExponentialScene extends Scene {
 
   Mobject autoRotateUpdater(Mobject vec, double dt) {
     rotatingArrowAngle = (rotatingArrowAngle + dt * rotationSpeed * TAU) % TAU;
-    vec.rotateAboutOrigin(dt * rotationSpeed * TAU);
+    vec.rotateAboutOrigin(-dt * rotationSpeed * TAU);
     return vec;
   }
 
@@ -151,7 +152,7 @@ class ComplexExponentialScene extends Scene {
     var newRotatedArrow = rotatingArrow.copy()..clearUpdaters();
 
     newRotatedArrow.shift(rotatingArrow.getEnd());
-    newRotatedArrow.rotate(90 * DEGREES, aboutPoint: rotatingArrow.getEnd());
+    newRotatedArrow.rotate(-90 * DEGREES, aboutPoint: rotatingArrow.getEnd());
 
     vec.become(newRotatedArrow);
     return vec;

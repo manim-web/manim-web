@@ -1,3 +1,5 @@
+library mobjects.svg;
+
 import 'dart:math';
 
 import 'package:html/dom.dart';

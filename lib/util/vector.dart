@@ -1,3 +1,5 @@
+library utils.vector;
+
 import 'dart:math';
 import 'package:manim_web/util/array.dart';
 import 'package:manim_web/util/space_ops.dart';

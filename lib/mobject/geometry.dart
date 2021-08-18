@@ -1,3 +1,5 @@
+library mobjects.geometry;
+
 import 'dart:math';
 
 import 'package:manim_web/constants.dart';

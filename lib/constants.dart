@@ -1,3 +1,5 @@
+library constants;
+
 import 'dart:math';
 
 import 'package:manim_web/util/color.dart';

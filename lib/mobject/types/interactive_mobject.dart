@@ -1,7 +1,6 @@
+library mobjects.interactive_mobject;
+
 import 'package:manim_web/util/events/event.dart';
-import 'package:manim_web/util/events/event_dispatcher.dart';
-import 'package:manim_web/util/events/event_listener.dart';
-import 'package:manim_web/util/events/mouse_events.dart';
 import 'package:manim_web/util/vector.dart';
 import 'package:manim_web/mobject/types/mobject.dart';
 

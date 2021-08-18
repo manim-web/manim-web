@@ -5,11 +5,6 @@ export 'package:manim_web/constants.dart';
 
 // ./animation/
 export 'package:manim_web/animation/animation.dart';
-export 'package:manim_web/animation/composition.dart';
-export 'package:manim_web/animation/creation.dart';
-export 'package:manim_web/animation/fading.dart';
-export 'package:manim_web/animation/transform.dart';
-export 'package:manim_web/animation/update.dart';
 
 // ./camera/
 export 'package:manim_web/camera/camera.dart';
@@ -31,11 +26,9 @@ export 'package:manim_web/mobject/svg/tex_mobject.dart';
 
 // ./display/
 export 'package:manim_web/display/abstract_display.dart';
-export 'package:manim_web/display/empty_display.dart';
 
 // ./renderer/
 export 'package:manim_web/renderer/abstract_renderer.dart';
-export 'package:manim_web/renderer/empty_renderer.dart';
 
 // ./scene/
 export 'package:manim_web/scene/scene.dart';
@@ -50,15 +43,9 @@ export 'package:manim_web/util/paths.dart';
 export 'package:manim_web/util/rate_functions.dart';
 export 'package:manim_web/util/space_ops.dart';
 export 'package:manim_web/util/vector.dart';
-
-// ./util/events
 export 'package:manim_web/util/events/event.dart';
-export 'package:manim_web/util/events/event_dispatcher.dart';
-export 'package:manim_web/util/events/event_listener.dart';
-export 'package:manim_web/util/events/key_events.dart';
-export 'package:manim_web/util/events/mouse_events.dart';
 
-// ./other libraries
+// other libraries
 export 'dart:math'
     hide
         Rectangle,

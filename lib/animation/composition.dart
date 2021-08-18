@@ -1,17 +1,4 @@
-library animation.composition;
-
-import 'dart:math';
-
-import 'package:tuple/tuple.dart';
-
-import 'package:manim_web/constants.dart';
-import 'package:manim_web/mobject/types/mobject.dart';
-import 'package:manim_web/scene/scene.dart';
-import 'package:manim_web/util/array.dart';
-import 'package:manim_web/util/bezier.dart';
-import 'package:manim_web/util/math_functions.dart';
-import 'package:manim_web/util/rate_functions.dart';
-import 'package:manim_web/animation/animation.dart';
+part of animation;
 
 class AnimationGroup extends Animation {
   List<Animation> animations;

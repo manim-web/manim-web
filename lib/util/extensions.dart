@@ -1,3 +1,5 @@
+library utils.extensions;
+
 import 'package:manim_web/util/array.dart';
 
 extension StringUtils on String {

@@ -1,12 +1,4 @@
-import 'package:collection/collection.dart';
-
-import 'package:manim_web/constants.dart';
-import 'package:manim_web/mobject/types/mobject.dart';
-import 'package:manim_web/scene/scene.dart';
-import 'package:manim_web/util/paths.dart';
-import 'package:manim_web/util/rate_functions.dart';
-import 'package:manim_web/util/vector.dart';
-import 'package:manim_web/animation/animation.dart';
+part of animation;
 
 class Transform extends Animation {
   late Mobject targetMobject;

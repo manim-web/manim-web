@@ -1,14 +1,13 @@
-/// The display can represent the canvas (in HTML) or a window (in native code).
-/// It deals with setting up the renderer ([AbstractRenderer]), and the events ([Event]).
-library manim.display.abstract_display;
+library display;
 
 import 'package:manim_web/camera/camera.dart';
 import 'package:manim_web/renderer/abstract_renderer.dart';
 import 'package:manim_web/util/color.dart';
 import 'package:manim_web/util/events/event.dart';
-import 'package:manim_web/util/events/event_dispatcher.dart';
 import 'package:manim_web/util/math_functions.dart';
 import 'package:manim_web/util/vector.dart';
+
+part 'empty_display.dart';
 
 /// The display can represent the canvas (in HTML) or a window (in native code).
 /// It deals with setting up the renderer ([AbstractRenderer]), and the events ([Event]).

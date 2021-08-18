@@ -1,16 +1,32 @@
 library animation;
 
+import 'dart:math';
+
+import 'package:tuple/tuple.dart';
 import 'package:collection/collection.dart';
 
 import 'package:manim_web/scene/scene.dart';
 import 'package:manim_web/constants.dart';
 import 'package:manim_web/mobject/types/mobject.dart';
+import 'package:manim_web/mobject/types/vectorized_mobject.dart';
 import 'package:manim_web/util/array.dart';
+import 'package:manim_web/util/bezier.dart';
 import 'package:manim_web/util/math_functions.dart';
+import 'package:manim_web/util/paths.dart';
 import 'package:manim_web/util/rate_functions.dart';
+import 'package:manim_web/util/vector.dart';
 
-typedef RateFunc = double Function(double,
-    {double? inflection, double? pauseRatio});
+part 'creation.dart';
+part 'composition.dart';
+part 'fading.dart';
+part 'transform.dart';
+part 'update.dart';
+
+typedef RateFunc = double Function(
+  double, {
+  double? inflection,
+  double? pauseRatio,
+});
 
 class Animation {
   double runTime;

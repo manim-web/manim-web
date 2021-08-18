@@ -1,3 +1,11 @@
+## 1.2.3
+
+- Changed the CLI name (`manimweb` and `manim_web`)
+- Changed the library to use `library` and `part`
+- Fixed some bugs in the CLI
+- Updated the complex exponential example
+- Updated the build_examples script
+
 ## 1.2.2
 
 - Changed CONTRIBUTING.md

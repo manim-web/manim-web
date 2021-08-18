@@ -1,5 +1,7 @@
+library utils.complex;
+
 import 'dart:math' as math;
-import 'dart:math' hide pow;
+import 'dart:math';
 
 import 'package:manim_web/util/vector.dart';
 

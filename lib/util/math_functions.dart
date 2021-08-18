@@ -1,3 +1,5 @@
+library utils.math_functions;
+
 import 'dart:math' hide log;
 import 'dart:math' as math;
 
