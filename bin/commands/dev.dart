@@ -6,6 +6,7 @@ import 'package:process_run/shell.dart';
 import '../helpers/build_process.dart';
 import '../helpers/console.dart';
 import '../helpers/display.dart';
+import '../helpers/files.dart';
 
 class DevProcess extends AbstractBuildProcess {
   Future? webdev;
@@ -26,7 +27,7 @@ class DevProcess extends AbstractBuildProcess {
       }
     });
 
-    file.watch().listen((e) => listener());
+    file.watchFile().listen((e) => listener());
 
     listener();
 

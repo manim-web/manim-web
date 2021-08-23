@@ -13,7 +13,7 @@ bool hasMainDeclared(String fileContent) {
 }
 
 extension BetterFile on File {
-  Stream<void> watch() {
+  Stream<void> watchFile() {
     return parent
         .watch()
         .where((event) => absolute(event.path) == absolute(path))
