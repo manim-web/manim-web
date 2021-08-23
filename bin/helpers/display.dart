@@ -48,16 +48,16 @@ class Display {
   bool get isDesktop => !isWeb;
 
   factory Display.fromArgs(ArgResults args) {
-    var gl = args.getFlag('use-gl');
+    var gl = args.getFlag('gl');
     var html = args.getNullableOption('html') != null;
 
     if (!gl && html) {
-      var id = args.getOption('canvas');
+      var id = args.getOption('canvas-container-id');
       return Display(
         type: DisplayType.WEB2D,
         imports: '''
           import 'dart:html';
-          import 'package:manim_web/display/canvas_2d_display.dart';
+          import 'package:manim_web/display/abstract_html_display.dart';
         ''',
         creationCode: 'Canvas2DDisplay(document.getElementById(\'$id\')!)',
       );

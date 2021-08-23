@@ -1,9 +1,4 @@
-library animation.creation;
-
-import 'package:manim_web/constants.dart';
-import 'package:manim_web/mobject/types/mobject.dart';
-import 'package:manim_web/util/rate_functions.dart';
-import 'package:manim_web/animation/animation.dart';
+part of animation;
 
 abstract class ShowPartial extends Animation {
   ShowPartial(

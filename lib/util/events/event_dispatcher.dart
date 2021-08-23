@@ -1,7 +1,4 @@
-import 'package:manim_web/util/events/event.dart';
-import 'package:manim_web/util/events/event_listener.dart';
-import 'package:manim_web/util/events/key_events.dart';
-import 'package:manim_web/util/events/mouse_events.dart';
+part of util.events;
 
 class EventDispatcher {
   static EventDispatcher eventDispatcher = EventDispatcher();

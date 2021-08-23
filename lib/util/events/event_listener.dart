@@ -1,4 +1,4 @@
-import 'package:manim_web/util/events/event.dart';
+part of util.events;
 
 typedef EventCallBack<IEvent extends Event> = bool Function(IEvent);
 

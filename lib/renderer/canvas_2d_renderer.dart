@@ -1,8 +1,10 @@
+library renderer.html;
+
 import 'dart:html';
 
 import 'package:manim_web/constants.dart';
 import 'package:manim_web/display/abstract_display.dart';
-import 'package:manim_web/display/canvas_2d_display.dart';
+import 'package:manim_web/display/abstract_html_display.dart';
 import 'package:manim_web/util/array.dart';
 import 'package:manim_web/util/color.dart';
 import 'package:manim_web/mobject/types/vectorized_mobject.dart';

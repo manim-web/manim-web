@@ -1,9 +1,13 @@
+library renderer;
+
 import 'package:manim_web/display/abstract_display.dart';
 import 'package:manim_web/mobject/types/mobject.dart';
 import 'package:manim_web/mobject/types/vectorized_mobject.dart';
 import 'package:manim_web/util/color.dart';
-import 'package:manim_web/util/events/event_dispatcher.dart';
+import 'package:manim_web/util/events/event.dart';
 import 'package:manim_web/util/vector.dart';
+
+part 'empty_renderer.dart';
 
 abstract class AbstractRenderer {
   double lineWidthMultiple = 0.01;

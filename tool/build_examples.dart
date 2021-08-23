@@ -19,7 +19,7 @@ void main() async {
 
   await shell.run([
     for (var d in examples)
-      'dart bin/manim.dart build -f ${d.item1.path} -h ${d.item2.path} --no-webdev'
+      'manimweb build -f ${d.item1.path} -w ${d.item2.path} --no-webdev'
   ].join('\n'));
 
   await shell.run('webdev build -o web:build');

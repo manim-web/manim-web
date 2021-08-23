@@ -1,3 +1,5 @@
+library utils.array;
+
 import 'dart:math';
 
 import 'package:tuple/tuple.dart';

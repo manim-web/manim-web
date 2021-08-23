@@ -1,3 +1,5 @@
+library mobjects.shape_matchers;
+
 import 'package:manim_web/constants.dart';
 import 'package:manim_web/util/color.dart';
 import 'package:manim_web/util/vector.dart';

@@ -1,8 +1,6 @@
 name: Checks
 
 on:
-  push:
-    branches: [master]
   pull_request:
     branches: [master]
 
@@ -17,14 +15,12 @@ jobs:
       - name: Install dependencies
         run: dart pub get
 
-      - name: Verify formatting
-        run: dart format --output=none --set-exit-if-changed .
+      - uses: axel-op/dart-package-analyzer@v3
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run checks
         run: dart run tool/checks/run_all_checks.dart
-
-      - name: Analyze project source
-        run: dart analyze
 
       # TODO Add tests :
       # - name: Run tests

@@ -1,7 +1,4 @@
-import 'package:manim_web/mobject/types/vectorized_mobject.dart';
-import 'package:manim_web/mobject/types/mobject.dart';
-import 'package:manim_web/renderer/abstract_renderer.dart';
-import 'package:manim_web/util/color.dart';
+part of renderer;
 
 class EmptyRenderer extends AbstractRenderer {
   @override

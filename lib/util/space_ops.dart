@@ -1,3 +1,5 @@
+library utils.space_ops;
+
 import 'dart:math';
 import 'package:manim_web/util/array.dart';
 import 'package:manim_web/util/complex.dart';

@@ -1,13 +1,4 @@
-library animation.fading;
-
-import 'package:manim_web/animation/transform.dart';
-import 'package:manim_web/constants.dart';
-import 'package:manim_web/mobject/types/mobject.dart';
-import 'package:manim_web/mobject/types/vectorized_mobject.dart';
-import 'package:manim_web/scene/scene.dart';
-import 'package:manim_web/util/rate_functions.dart';
-import 'package:manim_web/animation/animation.dart';
-import 'package:manim_web/util/vector.dart';
+part of animation;
 
 class FadeIn extends Transform {
   FadeIn(
@@ -51,7 +42,7 @@ class FadeOut extends Transform {
   @override
   void cleanUpFromScene(Scene scene) {
     super.cleanUpFromScene(scene);
-    interpolate(0);
+    this.interpolate(0);
   }
 }
 

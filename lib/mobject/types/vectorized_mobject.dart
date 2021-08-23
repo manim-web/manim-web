@@ -1,3 +1,5 @@
+library mobjects.vectorized_mobject;
+
 import 'dart:core';
 import 'dart:math';
 

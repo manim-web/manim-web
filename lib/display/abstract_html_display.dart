@@ -1,14 +1,17 @@
-library display.abstract_html_display;
+library display.html;
 
 import 'dart:async';
 import 'dart:html';
 
 import 'package:manim_web/constants.dart';
 import 'package:manim_web/display/abstract_display.dart';
-import 'package:manim_web/util/events/key_events.dart';
-import 'package:manim_web/util/events/mouse_events.dart';
+import 'package:manim_web/renderer/abstract_renderer.dart';
+import 'package:manim_web/renderer/canvas_2d_renderer.dart';
+import 'package:manim_web/util/events/event.dart';
 import 'package:manim_web/util/math_functions.dart';
 import 'package:manim_web/util/vector.dart';
+
+part 'canvas_2d_display.dart';
 
 /// Abstract class to display in the html
 abstract class AbstractHTMLDisplay extends AbstractDisplay {

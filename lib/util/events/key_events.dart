@@ -1,4 +1,4 @@
-import 'package:manim_web/util/events/event.dart';
+part of util.events;
 
 abstract class KeyEvent extends Event {
   String key;

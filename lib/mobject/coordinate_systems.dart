@@ -1,3 +1,5 @@
+library mobjects.coordinate_systems;
+
 import 'dart:math';
 
 import 'package:collection/collection.dart';

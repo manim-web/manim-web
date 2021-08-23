@@ -1,7 +1,4 @@
-import 'package:manim_web/animation/animation.dart';
-import 'package:manim_web/constants.dart';
-import 'package:manim_web/mobject/types/mobject.dart';
-import 'package:manim_web/util/rate_functions.dart';
+part of animation;
 
 class UpdateFromFunc<Mob extends Mobject> extends Animation {
   Mob Function(Mob) updateFunc;

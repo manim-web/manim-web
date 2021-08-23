@@ -1,17 +1,15 @@
+library scene;
+
 import 'dart:async';
 import 'dart:math';
 
 import 'package:manim_web/animation/animation.dart';
-import 'package:manim_web/animation/composition.dart';
 import 'package:manim_web/camera/camera.dart';
 import 'package:manim_web/display/abstract_display.dart';
 import 'package:manim_web/mobject/types/mobject.dart';
 import 'package:manim_web/renderer/abstract_renderer.dart';
 import 'package:manim_web/util/array.dart';
 import 'package:manim_web/util/events/event.dart';
-import 'package:manim_web/util/events/event_dispatcher.dart';
-import 'package:manim_web/util/events/event_listener.dart';
-import 'package:manim_web/util/events/mouse_events.dart';
 
 abstract class Scene {
   double time = 0;

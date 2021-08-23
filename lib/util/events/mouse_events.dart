@@ -1,5 +1,4 @@
-import 'package:manim_web/util/events/event.dart';
-import 'package:manim_web/util/vector.dart';
+part of util.events;
 
 abstract class MouseEvent extends Event {
   Vector3 mousePos; // used as a vector 2

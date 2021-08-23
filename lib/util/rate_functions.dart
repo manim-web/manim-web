@@ -1,3 +1,5 @@
+library utils.rate_functions;
+
 import 'package:manim_web/util/math_functions.dart';
 
 double linear(double t, {double? inflection, double? pauseRatio}) => t;
