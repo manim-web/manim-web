@@ -1,13 +1,11 @@
 import 'dart:io';
 
-import 'package:args/args.dart';
 import 'package:path/path.dart';
 import 'package:process_run/shell.dart';
 
 import '../helpers/build_process.dart';
 import '../helpers/console.dart';
 import '../helpers/display.dart';
-import '../helpers/files.dart';
 
 class DevProcess extends AbstractBuildProcess {
   Future? webdev;
@@ -32,7 +30,7 @@ class DevProcess extends AbstractBuildProcess {
 
     listener();
 
-    if (display.isWeb) {
+    if (display.isWeb && getFlag('webdev')) {
       var port = getOption('port');
       if (int.tryParse(port) == null) {
         port = '8080';

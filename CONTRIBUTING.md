@@ -15,8 +15,12 @@ Before you start contributing, there are a few things to know :
 
 ## Checks
 
+These checks automatically run with GitHub CI when a pull request is made.
+
 - Analyse your code with `dart analyse` (looks for unused imports, variables, and more)
 - Format your code with `dart format {file}` for every file you changed or `dart run tool/format_all.dart`
 - Run the custom checks with `dart run tool/checks/run_all_checks.dart`
-- If you changed the examples :
-  - please run `dart tool/build_examples.dart`
+
+## Branches
+
+When working on a feature, create a branch prefixed with `feature/`. Once the feature is ready, create a pull request.
