@@ -1,4 +1,4 @@
-# ![Manim Web](doc/logo/logo.png)
+# ![Manim Web](https://raw.githubusercontent.com/manim-web/manim-web.github.io/master/public/images/logo.png)
 
 Manim animation engine, for the web.
 
@@ -6,7 +6,7 @@ Manim animation engine, for the web.
 
 ## Getting started
 
-Look at the [**Getting Started** section of the website](https://manim-web.hugos29.dev/).
+Look at the [**Getting Started** section of the website](https://manim-web.hugos29.dev/getting-started).
 
 ## Examples
 
