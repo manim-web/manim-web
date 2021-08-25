@@ -159,7 +159,7 @@ class ComplexExponentialScene extends Scene {
   }
 
   Mobject rotateTowardsCursor(Mobject vec, double dt) {
-    vec.rotateAboutOrigin(-rotatingArrowAngle + interactiveArrowAngle);
+    vec.rotateAboutOrigin(rotatingArrowAngle - interactiveArrowAngle);
     rotatingArrowAngle = interactiveArrowAngle;
     return vec;
   }
