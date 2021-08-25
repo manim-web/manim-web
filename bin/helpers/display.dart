@@ -33,12 +33,6 @@ class Display {
   String creationCode; // code used to create the display
   String imports;
 
-  Display({
-    required this.type,
-    required this.creationCode,
-    required this.imports,
-  });
-
   bool get isWeb2D => type == DisplayType.WEB2D;
   bool get isWebGL => type == DisplayType.WEBGL;
   bool get isCairo => type == DisplayType.CAIRO;
@@ -53,16 +47,14 @@ class Display {
 
     if (!gl && html) {
       var id = args.getOption('canvas-container-id');
-      return Display(
-        type: DisplayType.WEB2D,
-        imports: '''
-          import 'dart:html';
-          import 'package:manim_web/display/abstract_html_display.dart';
-        ''',
-        creationCode: 'Canvas2DDisplay(document.getElementById(\'$id\')!)',
-      );
+      return Display.web2D(id);
     } else {
       throw 'not implemented yet';
     }
   }
+
+  Display.web2D(String id)
+      : type = DisplayType.WEB2D,
+        imports = 'import \'package:manim_web/manim_html.dart\';',
+        creationCode = 'Canvas2DDisplay(document.getElementById(\'$id\')!)';
 }
