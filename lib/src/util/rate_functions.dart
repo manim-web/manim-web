@@ -1,12 +1,13 @@
-import 'package:manim_web/src/util/math_functions.dart';
+typedef RateFunc = double Function(double);
 
-double linear(double t, {double? inflection, double? pauseRatio}) => t;
+double linear(double t) => t;
 
-double smooth(double t, {double? inflection, double? pauseRatio}) {
-  inflection ??= 10.0;
-
-  var error = sigmoid(-inflection / 2);
-
-  return clip(
-      (sigmoid(inflection * (t - 0.5)) - error) / (1 - 2 * error), 0, 1);
+double smooth(double t) {
+  var s = 1 - t;
+  return (t * t * t) * (10 * s * s + 5 * s * t + t * t);
 }
+
+double doubleSmooth(double t) =>
+    t < 0.5 ? smooth(2 * t) / 2 : (smooth(2 * t - 1) + 1) / 2;
+
+RateFunc invertRateFunc(RateFunc f) => (t) => f(1 - t);

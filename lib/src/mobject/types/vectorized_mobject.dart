@@ -248,8 +248,12 @@ class VMobject extends Mobject {
       submobs1.removeWhere((element) => element is! VMobject);
       submobs2.removeWhere((element) => element is! VMobject);
 
-      for (var sm12 in IterableZip(
-          makeEven(submobs1, submobs2).toList().cast<List<VMobject>>())) {
+      var list = IterableZip(makeEven(submobs1, submobs2)
+          .toList()
+          .cast<List>()
+          .map((l) => l.cast<VMobject>()));
+
+      for (var sm12 in list) {
         sm12[0].matchStyle(sm12[1], family: true);
       }
     }
