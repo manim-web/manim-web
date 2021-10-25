@@ -111,3 +111,64 @@ class AnimationGroup extends Animation {
     }
   }
 }
+
+class Succession extends AnimationGroup {
+  late Animation activeAnimation;
+
+  Succession(
+    List<Animation> animations, {
+    double runTime = 0,
+    RateFunc rateFunc = linear,
+    double lagRatio = 1,
+    Group? group,
+  }) : super(
+          animations,
+          group: group,
+          rateFunc: rateFunc,
+          runTime: runTime,
+          lagRatio: lagRatio,
+        ) {
+    assert(animations.isNotEmpty);
+  }
+
+  @override
+  void begin() {
+    initRunTime();
+    activeAnimation = animations.first..begin();
+  }
+
+  @override
+  void finish() => activeAnimation.finish();
+
+  @override
+  void interpolate(double alpha) {
+    var _interpolationData = integerInterpolate(0, animations.length, alpha);
+    var index = _interpolationData.item1;
+    var subAlpha = _interpolationData.item2;
+
+    var anim = animations[index];
+
+    if (anim != activeAnimation) {
+      activeAnimation.finish();
+      activeAnimation = anim..begin();
+    }
+
+    anim.interpolate(subAlpha);
+  }
+}
+
+class LaggedStart extends AnimationGroup {
+  LaggedStart(
+    List<Animation> animations, {
+    double runTime = 0,
+    RateFunc rateFunc = linear,
+    double lagRatio = DEFAULT_ANIMATION_LAGGED_START_LAG_RATIO,
+    Group? group,
+  }) : super(
+          animations,
+          group: group,
+          rateFunc: rateFunc,
+          runTime: runTime,
+          lagRatio: lagRatio,
+        );
+}

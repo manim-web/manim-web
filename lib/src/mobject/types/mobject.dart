@@ -321,7 +321,7 @@ class Mobject {
   }
 
   void center({Vector3 mask = const Vector3(1, 1, 1)}) {
-    shift(getCenter() * mask * -1);
+    shift(-getCenter() * mask);
   }
 
   void centerOnXAxis() => center(mask: Vector3(1, 0, 0));
@@ -852,10 +852,9 @@ class Mobject {
     var alphas = linspace(start: 0, end: 1, count: numPieces + 1).flat();
 
     // alphas1 = alphas[:-1]
-    var alphas1 =
-        alphas.whereIndexed((index, element) => index != alphas.length - 1);
+    var alphas1 = withoutLast(alphas);
     // alphas2 = alphas[1:]
-    var alphas2 = alphas.whereIndexed((index, element) => index != 0);
+    var alphas2 = withoutFirst(alphas);
 
     return Group([
       for (var a in IterableZip([alphas1, alphas2]))

@@ -47,11 +47,13 @@ class Vector3 {
     } else if (v is Vector3) {
       return Vector3(x - v.x, y - v.y, z - v.z);
     } else if (v == null) {
-      return this * -1;
+      return -this;
     } else {
       throw 'Vector3 only support subtraction by num or Vector3';
     }
   }
+
+  Vector3 operator -() => this * -1;
 
   //* Expected : num or Vector3
   Vector3 operator *(dynamic v) {

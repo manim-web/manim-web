@@ -85,14 +85,16 @@ const PURPLE_D = Color(r: 0.44314, g: 0.33333, b: 0.5098); //      #715582
 const PURPLE_C = Color(r: 0.60392, g: 0.44706, b: 0.67451); //     #9A72AC
 const PURPLE_B = Color(r: 0.69412, g: 0.53725, b: 0.77647); //     #B189C6
 const PURPLE_A = Color(r: 0.79216, g: 0.63922, b: 0.9098); //      #CAA3E8
-const BLUE = Color(r: 0.3451, g: 0.76863, b: 0.86667); //          #58C4DD
-const TEAL = Color(r: 0.36078, g: 0.81569, b: 0.70196); //         #5CD0B3
-const GREEN = Color(r: 0.51373, g: 0.75686, b: 0.40392); //        #83C167
-const YELLOW = Color(r: 1.0, g: 1.0, b: 0.0); //                   #FFFF00
-const GOLD = Color(r: 0.94118, g: 0.67451, b: 0.37255); //         #F0AC5F
-const RED = Color(r: 0.98824, g: 0.38431, b: 0.33333); //          #FC6255
-const MAROON = Color(r: 0.77255, g: 0.37255, b: 0.45098); //       #C55F73
-const PURPLE = Color(r: 0.60392, g: 0.44706, b: 0.67451); //       #9A72AC
+
+const BLUE = BLUE_C;
+const TEAL = TEAL_C;
+const GREEN = GREEN_C;
+const YELLOW = YELLOW_C;
+const GOLD = GOLD_C;
+const RED = RED_C;
+const MAROON = MAROON_C;
+const PURPLE = PURPLE_C;
+
 const LIGHT_GRAY = Color(r: 0.73333, g: 0.73333, b: 0.73333); //   #BBBBBB
 const LIGHT_GREY = Color(r: 0.73333, g: 0.73333, b: 0.73333); //   #BBBBBB
 const GRAY = Color(r: 0.53333, g: 0.53333, b: 0.53333); //         #888888
@@ -101,6 +103,7 @@ const DARK_GREY = Color(r: 0.26667, g: 0.26667, b: 0.26667); //    #444444
 const DARK_GRAY = Color(r: 0.26667, g: 0.26667, b: 0.26667); //    #444444
 const DARKER_GREY = Color(r: 0.13333, g: 0.13333, b: 0.13333); //  #222222
 const DARKER_GRAY = Color(r: 0.13333, g: 0.13333, b: 0.13333); //  #222222
+
 const GREY_BROWN = Color(r: 0.45098, g: 0.38824, b: 0.34118); //   #736357
 const PINK = Color(r: 0.81961, g: 0.27843, b: 0.74118); //         #D147BD
 const LIGHT_PINK = Color(r: 0.86275, g: 0.45882, b: 0.80392); //   #DC75CD
@@ -120,6 +123,7 @@ const DEFAULT_ARROW_TIP_LENGTH = 0.35;
 
 const DEFAULT_ANIMATION_RUN_TIME = 1.0;
 const DEFAULT_ANIMATION_LAG_RATIO = 0.0;
+const DEFAULT_ANIMATION_LAGGED_START_LAG_RATIO = 0.05;
 
 //* Helpers
 const TIP_AT_START = TipSide.Start;
