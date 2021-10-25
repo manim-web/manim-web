@@ -7,12 +7,6 @@ import 'package:manim_web/src/util/array.dart';
 import 'package:manim_web/src/util/math_functions.dart';
 import 'package:manim_web/src/util/rate_functions.dart';
 
-typedef RateFunc = double Function(
-  double, {
-  double? inflection,
-  double? pauseRatio,
-});
-
 class Animation {
   double runTime;
   RateFunc rateFunc;
