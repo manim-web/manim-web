@@ -134,7 +134,7 @@ class NumberLine extends Line {
 
     putStartAndEndOn(start, end);
 
-    shift(numberToPoint(numberAtCenter) * -1);
+    shift(-numberToPoint(numberAtCenter));
 
     initLeftmostTick();
 
