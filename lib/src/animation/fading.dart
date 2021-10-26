@@ -78,26 +78,36 @@ class FadeOut extends Transform {
   }
 }
 
-class FadeInFrom extends Transform {
-  @override
-  bool remover = true;
-  Vector3 direction;
-
-  FadeInFrom(
-    Mobject mobject, {
-    required this.direction,
+class FadeInFromPoint extends FadeIn {
+  FadeInFromPoint(
+    Mobject mobject,
+    Vector3 point, {
     double runTime = DEFAULT_ANIMATION_RUN_TIME,
     RateFunc rateFunc = smooth,
     double lagRatio = DEFAULT_ANIMATION_LAG_RATIO,
-  }) : super(mobject, runTime: runTime, rateFunc: rateFunc, lagRatio: lagRatio);
+  }) : super(
+          mobject,
+          shift: mobject.getCenter() - point,
+          scale: double.infinity,
+          runTime: runTime,
+          rateFunc: rateFunc,
+          lagRatio: lagRatio,
+        );
+}
 
-  @override
-  Mobject createTarget() => mobject.copy();
-
-  @override
-  void begin() {
-    super.begin();
-    startingMobject.shift(direction);
-    startingMobject.fade(darkness: 1);
-  }
+class FadeOutFromPoint extends FadeOut {
+  FadeOutFromPoint(
+    Mobject mobject,
+    Vector3 point, {
+    double runTime = DEFAULT_ANIMATION_RUN_TIME,
+    RateFunc rateFunc = smooth,
+    double lagRatio = DEFAULT_ANIMATION_LAG_RATIO,
+  }) : super(
+          mobject,
+          shift: point - mobject.getCenter(),
+          scale: 0,
+          runTime: runTime,
+          rateFunc: rateFunc,
+          lagRatio: lagRatio,
+        );
 }

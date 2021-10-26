@@ -11,3 +11,5 @@ double doubleSmooth(double t) =>
     t < 0.5 ? smooth(2 * t) / 2 : (smooth(2 * t - 1) + 1) / 2;
 
 RateFunc invertRateFunc(RateFunc f) => (t) => f(1 - t);
+
+double thereAndBack(double t) => t < 0.5 ? smooth(2 * t) : smooth(2 * (1 - t));
