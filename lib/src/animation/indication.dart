@@ -1,12 +1,15 @@
-import 'package:manim_web/manim.dart';
+import 'dart:math';
+
 import 'package:manim_web/src/animation/animation.dart';
 import 'package:manim_web/src/animation/composition.dart';
+import 'package:manim_web/src/animation/creation.dart';
 import 'package:manim_web/src/animation/transform.dart';
 import 'package:manim_web/src/constants.dart';
 import 'package:manim_web/src/mobject/geometry.dart';
 import 'package:manim_web/src/mobject/types/mobject.dart';
 import 'package:manim_web/src/mobject/types/vectorized_mobject.dart';
 import 'package:manim_web/src/util/array.dart';
+import 'package:manim_web/src/util/bezier.dart';
 import 'package:manim_web/src/util/color.dart';
 import 'package:manim_web/src/util/rate_functions.dart';
 import 'package:manim_web/src/util/vector.dart';
@@ -154,7 +157,7 @@ class ShowPassingFlash extends ShowPartial {
 
   @override
   List<double> getBounds(double alpha) {
-    var upper = interpolate(0, 1 + timeWidth, alpha);
+    var upper = interpolateValue(0, 1 + timeWidth, alpha);
     var lower = upper - timeWidth;
     return [min(upper, 1), max(lower, 0)];
   }
