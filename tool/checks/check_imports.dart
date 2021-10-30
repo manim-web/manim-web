@@ -57,6 +57,8 @@ bool _checkHTMLImport(bool ok, File file, Iterable<String> importLines) {
     'abstract_html_display.dart',
     'canvas_2d_renderer.dart',
     'canvas_2d_display.dart',
+    'recorded_canvas_2d_display.dart',
+    'js_util.dart',
   ];
   var isAllowed =
       (String path) => allowedFiles.any((file) => path.contains(file));
