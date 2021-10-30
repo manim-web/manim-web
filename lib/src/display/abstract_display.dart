@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:manim_web/src/camera/camera.dart';
 import 'package:manim_web/src/renderer/abstract_renderer.dart';
 import 'package:manim_web/src/util/color.dart';
@@ -123,4 +125,6 @@ abstract class AbstractDisplay {
   void setup() {
     renderer.setup(this);
   }
+
+  FutureOr<void> tearDown() {}
 }

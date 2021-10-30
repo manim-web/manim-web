@@ -41,20 +41,22 @@ class Display {
   bool get isWeb => isWeb2D || isWebGL;
   bool get isDesktop => !isWeb;
 
-  factory Display.fromArgs(ArgResults args) {
+  factory Display.fromArgs(ArgResults args, bool renderMode) {
     var gl = args.getFlag('gl');
     var html = args.getNullableOption('html') != null;
 
     if (!gl && html) {
       var id = args.getOption('canvas-container-id');
-      return Display.web2D(id);
+      return Display.web2D(id, renderMode);
     } else {
       throw 'not implemented yet';
     }
   }
 
-  Display.web2D(String id)
+  Display.web2D(String id, bool renderMode)
       : type = DisplayType.WEB2D,
         imports = 'import \'package:manim_web/manim_html.dart\';',
-        creationCode = 'Canvas2DDisplay(document.getElementById(\'$id\')!)';
+        creationCode = renderMode
+            ? 'RecordedCanvas2DDisplay(document.getElementById(\'$id\')!)'
+            : 'Canvas2DDisplay(document.getElementById(\'$id\')!)';
 }

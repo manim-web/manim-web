@@ -32,7 +32,7 @@ abstract class AbstractHTMLDisplay extends AbstractDisplay {
 
     var dt = nextTimeStep - previousTimeStep;
     previousTimeStep += dt;
-    return (dt / 1000) * 2; // in seconds
+    return dt / 1000; // in seconds
   }
 
   /// Sets the width and the height of the [canvas]
