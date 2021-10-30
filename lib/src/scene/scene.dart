@@ -50,6 +50,7 @@ abstract class Scene {
     render();
     await tearDown();
 
+    await display.tearDown();
     display.unbindEventListeners();
   }
 

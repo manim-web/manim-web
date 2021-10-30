@@ -21,6 +21,8 @@ abstract class AbstractBuildProcess extends Command {
   late String fileContent;
   late Display display;
 
+  bool get renderMode => false;
+
   Future prepare() async {
     var fileName = getNullableOption('file');
     if (fileName == null) {
@@ -228,7 +230,7 @@ abstract class AbstractBuildProcess extends Command {
   }
 
   Display getDisplay() {
-    return Display.fromArgs(argResults!);
+    return Display.fromArgs(argResults!, renderMode);
   }
 
   Future injectData({

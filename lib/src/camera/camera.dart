@@ -12,6 +12,9 @@ class Camera {
   double frameWidth = FRAME_WIDTH;
   double frameHeight = FRAME_HEIGHT;
   Vector3 frameCenter = ORIGIN;
+
+  double frameRate = DEFAULT_FRAME_RATE;
+
   Color backgroundColor;
   late AbstractDisplay display;
 
