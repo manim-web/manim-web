@@ -2,6 +2,7 @@ import 'package:manim_web/src/constants.dart';
 import 'package:manim_web/src/display/abstract_display.dart';
 import 'package:manim_web/src/mobject/types/mobject.dart';
 import 'package:manim_web/src/mobject/types/vectorized_mobject.dart';
+import 'package:manim_web/src/util/aabb.dart';
 import 'package:manim_web/src/util/array.dart';
 import 'package:manim_web/src/util/color.dart';
 import 'package:manim_web/src/util/vector.dart';
@@ -27,13 +28,15 @@ class Camera {
     display.bindCamera(this);
     display.setup();
     resizeFrameShape();
-    display.renderer.renderBackground(backgroundColor);
+    var aabb = getFullScreenAABB();
+    display.renderer.renderBackground(backgroundColor, aabb);
   }
 
   void resetPixelShape(int newWidth, int newHeight) {
     pixelWidth = newWidth;
     pixelHeight = newHeight;
-    display.renderer.renderBackground(backgroundColor);
+    var aabb = getFullScreenAABB();
+    display.renderer.renderBackground(backgroundColor, aabb);
     display.setDisplaySize(pixelWidth, pixelHeight);
     resizeFrameShape();
   }
@@ -43,6 +46,11 @@ class Camera {
   double getFrameHeight() => frameHeight;
   double getFrameWidth() => frameWidth;
   Vector3 getFrameCenter() => frameCenter;
+
+  AABB getFullScreenAABB() => AABB(
+        pt1: frameCenter - (UP * FRAME_HEIGHT + LEFT * FRAME_WIDTH) / 2,
+        pt2: frameCenter + (UP * FRAME_HEIGHT + LEFT * FRAME_WIDTH) / 2,
+      );
 
   void resizeFrameShape({int fixedDimension = 0}) {
     var aspectRatio = pixelWidth / pixelHeight;
@@ -56,19 +64,8 @@ class Camera {
     refreshMatrix();
   }
 
-  void reset() {
-    display.renderer.renderBackground(backgroundColor);
-  }
-
-  List<Mobject> extractMobjectFamilyMembers(List<Mobject> mobjects,
-      {bool onlyThoseWithPoints = false}) {
-    var method = onlyThoseWithPoints
-        ? (Mobject m) => m.getFamilyWithPoints()
-        : (Mobject m) => m.getFamily();
-
-    return withoutRedundancies([
-      for (var mob in mobjects) ...method(mob),
-    ]);
+  void reset(AABB aabb) {
+    display.renderer.renderBackground(backgroundColor, aabb);
   }
 
   bool isInFrame(Mobject mob) {
@@ -82,12 +79,14 @@ class Camera {
     return !checks.reduce((a, b) => a || b);
   }
 
-  void render(List<Mobject> mobjects) {
-    for (var mobject in extractMobjectFamilyMembers(mobjects).reversed) {
+  void render(List<Mobject> mobjects, AABB aabb) {
+    var family = [for (var mob in mobjects) ...mob.getFamily()].reversed;
+
+    for (var mobject in family) {
       if (mobject is VMobject) {
-        display.renderer.renderVMobject(mobject);
+        display.renderer.renderVMobject(mobject, aabb);
       } else {
-        display.renderer.renderMobject(mobject);
+        display.renderer.renderMobject(mobject, aabb);
       }
     }
   }

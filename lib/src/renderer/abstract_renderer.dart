@@ -1,6 +1,7 @@
 import 'package:manim_web/src/display/abstract_display.dart';
 import 'package:manim_web/src/mobject/types/mobject.dart';
 import 'package:manim_web/src/mobject/types/vectorized_mobject.dart';
+import 'package:manim_web/src/util/aabb.dart';
 import 'package:manim_web/src/util/color.dart';
 import 'package:manim_web/src/util/events/event_dispatcher.dart';
 import 'package:manim_web/src/util/vector.dart';
@@ -25,11 +26,11 @@ abstract class AbstractRenderer {
 
   void setMatrix(double a, double b, double c, double d, double e, double f);
 
-  void renderBackground(Color backgroundColor);
+  void renderBackground(Color backgroundColor, AABB aabb);
 
-  void renderMobject(Mobject mob);
-  void renderMobjects(List<Mobject> mobs);
+  void renderMobject(Mobject mob, AABB aabb);
+  void renderMobjects(List<Mobject> mobs, AABB aabb);
 
-  void renderVMobject(VMobject mob);
-  void renderVMobjects(List<VMobject> mobs);
+  void renderVMobject(VMobject mob, AABB aabb);
+  void renderVMobjects(List<VMobject> mobs, AABB aabb);
 }

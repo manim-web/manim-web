@@ -15,6 +15,7 @@ abstract class InteractiveMobject extends Mobject {
   InteractiveMobject({required this.mobject}) {
     add([mobject]);
     bindEventListeners();
+    addUpdater((mob, _) => mob); // add updater to be interactive
   }
 
   EventListener<IEvent> addEventListener<IEvent extends Event>(

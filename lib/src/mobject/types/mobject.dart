@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:collection/collection.dart';
+import 'package:manim_web/src/util/aabb.dart';
 import 'package:tuple/tuple.dart';
 
 import 'package:manim_web/src/constants.dart';
@@ -410,6 +411,27 @@ class Mobject {
     }
   }
 
+  AABB getAABB() {
+    var boundary = getAllPoints();
+
+    if (boundary.isEmpty) {
+      return AABB.empty();
+    }
+
+    var x1 = getExtremumAlongDim(points: boundary, dim: 0, key: 1);
+    var y1 = getExtremumAlongDim(points: boundary, dim: 1, key: 1);
+    var z1 = getExtremumAlongDim(points: boundary, dim: 2, key: 1);
+
+    var x2 = getExtremumAlongDim(points: boundary, dim: 0, key: -1);
+    var y2 = getExtremumAlongDim(points: boundary, dim: 1, key: -1);
+    var z2 = getExtremumAlongDim(points: boundary, dim: 2, key: -1);
+
+    var pt1 = Vector3(x1, y1, z1);
+    var pt2 = Vector3(x2, y2, z2);
+
+    return AABB(pt1: pt1, pt2: pt2);
+  }
+
   bool isOffScreen() {
     var checks = [
       getLeft().x > FRAME_X_RADIUS,
@@ -677,7 +699,7 @@ class Mobject {
 
   List<Vector3> getAllPoints() {
     return [
-      for (var mob in getFamilyWithPoints()) ...mob.points,
+      for (var mob in getFamilyWithPoints()) ...mob.getPointsDefiningBoundary(),
     ];
   }
 
@@ -685,7 +707,7 @@ class Mobject {
 
   double getExtremumAlongDim(
       {List<Vector3>? points, int dim = 0, int key = 0}) {
-    points ??= getPointsDefiningBoundary();
+    points ??= getAllPoints();
 
     var values = [for (var point in points) point.getComponent(dim)];
 
@@ -701,7 +723,7 @@ class Mobject {
   }
 
   Vector3 getCriticalPoint(Vector3 direction) {
-    var allPoints = getPointsDefiningBoundary();
+    var allPoints = getAllPoints();
 
     if (allPoints.isEmpty) {
       return ORIGIN;

@@ -3,10 +3,12 @@ import 'dart:html';
 import 'package:manim_web/src/constants.dart';
 import 'package:manim_web/src/display/abstract_display.dart';
 import 'package:manim_web/src/display/canvas_2d_display.dart';
+import 'package:manim_web/src/util/aabb.dart';
 import 'package:manim_web/src/util/array.dart';
 import 'package:manim_web/src/util/color.dart';
 import 'package:manim_web/src/mobject/types/vectorized_mobject.dart';
 import 'package:manim_web/src/mobject/types/mobject.dart';
+import 'package:manim_web/src/util/space_ops.dart';
 import 'package:manim_web/src/util/vector.dart';
 import 'package:manim_web/src/renderer/abstract_renderer.dart';
 
@@ -24,33 +26,35 @@ class Canvas2DRenderer extends AbstractRenderer {
   }
 
   @override
-  void renderBackground(Color backgroundColor) {
-    var camera = display.camera;
+  void renderBackground(Color backgroundColor, AABB aabb) {
     var c = display.applyColorTransformation(backgroundColor);
     ctx.fillStyle = c.toRGBAString();
 
-    var x = camera.frameCenter.x - camera.frameWidth / 2;
-    var y = camera.frameCenter.y - camera.frameHeight / 2;
+    var p1 = applyMatrix(aabb.pt1);
+    var p2 = applyMatrix(aabb.pt2);
 
-    ctx.fillRect(x, y, camera.frameWidth, camera.frameHeight);
+    var w = p2.x - p1.x;
+    var h = p2.y - p1.y;
+
+    ctx.fillRect(p1.x, p1.y, w, h);
   }
 
   @override
-  void renderMobject(Mobject mob) {
+  void renderMobject(Mobject mob, AABB aabb) {
     // Mobjects can't be rendered directly
     // They need to be instances of the subclasses
     // For example: VMobject
   }
 
   @override
-  void renderMobjects(List<Mobject> mobs) {
+  void renderMobjects(List<Mobject> mobs, AABB aabb) {
     // Mobjects can't be rendered directly
     // They need to be instances of the subclasses
     // For example: VMobject
   }
 
   @override
-  void renderVMobject(VMobject vmob) {
+  void renderVMobject(VMobject vmob, AABB aabb) {
     var points = transformPointsPreDisplay(vmob, vmob.getPoints());
 
     if (points.isEmpty) {
@@ -66,9 +70,28 @@ class Canvas2DRenderer extends AbstractRenderer {
 
     var path = Path2D(totalPath);
 
+    clipAABB(aabb);
+
     applyVMobjectStroke(path, vmob, background: true);
     applyVMobjectFill(path, vmob);
     applyVMobjectStroke(path, vmob, background: false);
+
+    ctx.restore();
+  }
+
+  void clipAABB(AABB aabb) {
+    ctx.save();
+    ctx.beginPath();
+
+    var p1 = applyMatrix(aabb.pt1);
+    var p2 = applyMatrix(aabb.pt2);
+
+    var w = p2.x - p1.x;
+    var h = p2.y - p1.y;
+
+    ctx.rect(p1.x, p1.y, w, h);
+
+    ctx.clip();
   }
 
   String getVMobjectSubpath(VMobject vmob, List<Vector3> subpath) {
@@ -159,14 +182,24 @@ class Canvas2DRenderer extends AbstractRenderer {
   }
 
   @override
-  void renderVMobjects(List<VMobject> vmobs) {
+  void renderVMobjects(List<VMobject> vmobs, AABB aabb) {
     for (var vmob in vmobs) {
-      renderVMobject(vmob);
+      renderVMobject(vmob, aabb);
     }
   }
 
   @override
   void setMatrix(double a, double b, double c, double d, double e, double f) {
     ctx.setTransform(a, b, c, d, e, f);
+
+    var mat = Array(values: [
+      [a, c, e],
+      [b, d, f],
+      [0, 0, 1]
+    ]);
+
+    applyMatrix = (p) => p.matMul(mat);
   }
+
+  Vector3 Function(Vector3) applyMatrix = (p) => p;
 }

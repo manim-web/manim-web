@@ -7,6 +7,7 @@ import 'package:manim_web/src/camera/camera.dart';
 import 'package:manim_web/src/display/abstract_display.dart';
 import 'package:manim_web/src/mobject/types/mobject.dart';
 import 'package:manim_web/src/renderer/abstract_renderer.dart';
+import 'package:manim_web/src/util/aabb.dart';
 import 'package:manim_web/src/util/array.dart';
 import 'package:manim_web/src/util/events/event.dart';
 import 'package:manim_web/src/util/events/event_dispatcher.dart';
@@ -15,10 +16,9 @@ import 'package:manim_web/src/util/events/mouse_events.dart';
 
 abstract class Scene {
   double time = 0;
-  bool alwaysUpdateMobjects = false;
   int randomSeed = 0;
 
-  late List<Mobject> mobjects;
+  List<Mobject> mobjects = [];
   late Random random;
   late Camera camera;
   late AbstractRenderer renderer;
@@ -41,13 +41,13 @@ abstract class Scene {
     display.bindEventListeners();
 
     await setup();
+
     try {
       await construct();
     } on EndSceneEarlyException {
       print('An EndSceneEarlyException has occured');
     }
-    resetCamera();
-    render();
+    renderSame();
     await tearDown();
 
     await display.tearDown();
@@ -64,24 +64,60 @@ abstract class Scene {
   FutureOr<void> construct(); //* To be implemented in subclasses
   FutureOr<void> tearDown() {}
 
-  void resetCamera() => camera.reset();
-  void render() => camera.render(mobjects);
+  void resetCamera(AABB aabb) => camera.reset(aabb);
 
-  void updateFrame(double dt) {
-    resetCamera();
-    render();
+  // render the same frame as last time
+  void renderSame() => render([], AABB.empty());
+  void renderFull() => render(mobjects, camera.getFullScreenAABB());
+  void render(
+    List<Mobject> mobjects,
+    AABB aabb,
+  ) =>
+      camera.render(mobjects, aabb);
+
+  void updateFrame(double dt, List<Mobject> mobjects) {
+    var group = Group(mobjects);
+    var aabb = group.getAABB();
+
+    if (time == 0) {
+      mobjects = this.mobjects;
+      aabb = camera.getFullScreenAABB();
+    }
+
+    print(mobjects);
+
+    if (aabb.isEmpty) {
+      time += dt;
+      return;
+    }
+
+    var mobjectsToRender = getIntersectingMobjects(aabb);
+
+    resetCamera(aabb);
+    render(mobjectsToRender, aabb);
+
     time += dt;
   }
 
-  void updateMobjects(double dt) {
+  List<Mobject> getIntersectingMobjects(AABB aabb) {
+    var mobjectsToRender = <Mobject>[];
+
+    for (var mobject in mobjects) {
+      var _aabb = mobject.getAABB();
+
+      if (aabb.intersectsAABB(_aabb)) {
+        mobjectsToRender.add(mobject);
+      }
+    }
+
+    return mobjectsToRender;
+  }
+
+  void updateMobjects(double dt, List<Mobject> mobjects) {
     for (var mob in mobjects) {
       mob.update(dt: dt);
     }
   }
-
-  bool shouldUpdateMobjects() =>
-      alwaysUpdateMobjects ||
-      [for (var mob in getMobjectsFamilies()) mob.hasUpdaters()].any((e) => e);
 
   double getTime() => time;
   void incrementTime(double dt) => time += dt;
@@ -106,7 +142,7 @@ abstract class Scene {
   }
 
   List<Mobject> getMobjectsFamilies() =>
-      camera.extractMobjectFamilyMembers(mobjects);
+      withoutRedundancies([for (var mob in mobjects) ...mob.getFamily()]);
 
   void addToBack(List<Mobject> mobjects) {
     restructureMobjects(toRemove: mobjects);
@@ -123,11 +159,14 @@ abstract class Scene {
   void remove(List<Mobject> mobjects) =>
       restructureMobjects(toRemove: mobjects, extractFamilies: true);
 
-  void restructureMobjects(
-      {List<Mobject> toRemove = const [], bool extractFamilies = true}) {
+  void restructureMobjects({
+    List<Mobject> toRemove = const [],
+    bool extractFamilies = true,
+  }) {
     var toRemove_ = [
       ...toRemove,
-      if (extractFamilies) ...camera.extractMobjectFamilyMembers(toRemove)
+      if (extractFamilies)
+        for (var mob in toRemove) ...mob.getFamily()
     ];
 
     mobjects = getRestructuredMobjectList(mobjects, toRemove_);
@@ -165,25 +204,10 @@ abstract class Scene {
   List<Mobject> getMobjectCopies() =>
       mobjects.map((mob) => mob.copy()).toList();
 
-  List<Mobject> getMovingMobjects(List<Animation> animations) {
-    var animationMobjects = animations.map((anim) => anim.mobject).toList();
-    var mobjects = getMobjectsFamilies();
-
-    for (var iMob in enumerate(mobjects)) {
-      var mob = iMob.item2;
-      var i = iMob.item1;
-
-      if (animationMobjects.contains(mob) ||
-          mob.getFamilyUpdaters().isNotEmpty) {
-        return mobjects.skip(i).toList();
-      }
-    }
-
-    return [];
-  }
-
-  double getRunTime(List<Animation> animations) =>
-      animations.map((anim) => anim.runTime).reduce(max);
+  List<Mobject> getMovingMobjects([Animation? animation]) => [
+        for (var mob in getMobjectsFamilies())
+          if (mob == animation?.mobject || mob.hasUpdaters()) mob
+      ];
 
   void beginAnimation(Animation animation) {
     var currentMobjects = getMobjectsFamilies();
@@ -192,17 +216,10 @@ abstract class Scene {
     var mob = animation.mobject;
     if (!currentMobjects.contains(mob)) {
       add([mob]);
-      currentMobjects.addAll(mob.getFamily());
     }
   }
 
   Future progressThroughAnimation(Animation animation) async {
-    //* NOTE:
-    //* In Manim, all non-moving mobjects are rendered before the animation
-    //* such that they don't have to be rerendered every frame of animation
-    //* However, here, non-moving mobjects are rerendered every frame
-    // TODO: Stop rerendering non moving mobjects (maybe ?)
-
     var t = 0.0;
 
     while (t < animation.runTime) {
@@ -214,15 +231,17 @@ abstract class Scene {
         ..updateMobjects(dt)
         ..interpolate(alpha);
 
-      updateMobjects(dt);
-      updateFrame(dt);
+      var mobjects = getMovingMobjects(animation);
+
+      updateMobjects(dt, mobjects);
+      updateFrame(dt, mobjects);
     }
   }
 
   void finishAnimation(Animation animation) {
     animation.finish();
     animation.cleanUpFromScene(this);
-    updateMobjects(0);
+    updateMobjects(0, getMovingMobjects(animation));
   }
 
   Future play(Animation animation) async {
@@ -241,8 +260,8 @@ abstract class Scene {
       var dt = await display.nextFrame();
       t += dt;
 
-      updateMobjects(dt);
-      updateFrame(dt);
+      updateMobjects(dt, []);
+      updateFrame(dt, getMovingMobjects());
     }
   }
 
@@ -278,8 +297,8 @@ abstract class Scene {
 
       while (!completed) {
         var dt = await display.nextFrame();
-        updateMobjects(dt);
-        updateFrame(dt);
+        updateMobjects(dt, []);
+        updateFrame(dt, getMovingMobjects());
       }
 
       removeEventListener(listener);

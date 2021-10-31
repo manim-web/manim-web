@@ -226,7 +226,8 @@ class Vector3 {
   }
 
   @override
-  String toString() => 'vec3($x, $y, $z)';
+  String toString() =>
+      'vec3(${x.toStringAsPrecision(3)}, ${y.toStringAsPrecision(3)}, ${z.toStringAsPrecision(3)})';
 
   bool isFinite() => x.isFinite && y.isFinite && z.isFinite;
   bool isInfinite() => x.isInfinite || y.isInfinite || z.isInfinite;
